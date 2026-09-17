@@ -16,18 +16,24 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard'));
+
+            // Redirect sesuai role
+            if (Auth::user()->isAdmin()) {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
+            return redirect()->intended(route('admin.inventaris.index'));
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        return back()
+            ->withInput($request->only('email', 'remember'))
+            ->withErrors(['email' => 'Email atau password salah.']);
     }
 
     public function logout(Request $request)

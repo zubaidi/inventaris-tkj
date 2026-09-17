@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Favicon icon-->
-    <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/logo.png') }}" />
 
     <!-- Core Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
@@ -32,11 +32,12 @@
                             <div class="card-body">
                                 <a href="../main/index.html"
                                     class="text-nowrap logo-img text-center d-block mb-5 w-100">
-                                    <img src="{{ asset('assets/image/dark-logo.svg') }}" class="dark-logo"
-                                        alt="Logo-Dark" />
-                                    <img src="{{ asset('assets/image/light-logo.svg') }}" class="light-logo"
+                                    <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark"
+                                        width="115" height="40" />
+                                    <img src="{{ asset('assets/image/tkj1.png') }}" class="light-logo"
                                         alt="Logo-light" />
                                 </a>
+
                                 <form action="{{ route('login') }}" method="POST">
                                     @csrf
                                     @if (session('error'))
@@ -64,17 +65,43 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
+                                    {{-- <div class="d-flex align-items-center justify-content-between mb-4">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="remember"
                                                 name="remember" {{ old('remember') ? 'checked' : '' }}>
                                             <label class="form-check-label" for="remember">Ingat saya</label>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">
                                         <i class="ti ti-login me-1"></i> Masuk Ke Sistem
                                     </button>
+                                    <button type="submit" class="btn btn-success w-100 py-8 rounded-2">
+                                        <i class="ti ti-login me-1"></i> Kembali Ke Dashboard
+                                    </button>
                                 </form>
+                            </div>
+                            <div class="card-footer border-0 py-3"
+                                style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+                                <div class="text-center text-white">
+                                    <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+                                        <span class="fw-semibold" style="font-size: 0.8rem;">
+                                            Inventaris TKJ
+                                        </span>
+                                        <span class="text-white-50" style="font-size: 0.75rem;">•</span>
+                                        <span class="text-white-50" style="font-size: 0.7rem;">
+                                            SMK Syafi'i Akrom
+                                        </span>
+                                    </div>
+                                    <div class="text-white-50" style="font-size: 0.7rem;">
+                                        &copy; 2026 · Develop
+                                        <i class="ti ti-heart-filled text-danger" style="font-size: 0.7rem;"></i>
+                                        oleh
+                                        <a href="http://rplsmksa.com" target="_blank"
+                                            class="text-decoration-none fw-semibold" style="color: #60a5fa;">
+                                            UP Codepelita
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

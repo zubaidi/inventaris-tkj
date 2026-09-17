@@ -57,23 +57,25 @@ Route::post('/logout', [LoginController::class, 'logout'])
 | dan return view di folder resources/views/admin/.
 */
 
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/inventaris/cetak', [InventarisController::class, 'cetakInventaris'])
-            ->name('inventaris.cetak');
-        Route::get('/inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
+        Route::middleware('admin')->group(function () {
+            Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+            Route::resource('labs', LabController::class);
+            Route::resource('sumber-dana', SumberDanaController::class);
+            Route::resource('user', UserController::class);
+            Route::prefix('backup')->name('backup.')->group(function () {
+                Route::get('/database', [BackupController::class, 'indexDatabase'])->name('database');
+                Route::get('/database/download', [BackupController::class, 'backupDatabase'])->name('database.download');
+                Route::get('/csv', [BackupController::class, 'indexCsv'])->name('csv');
+                Route::get('/csv/download/{table}', [BackupController::class, 'exportCsv'])->name('csv.download');
+            });
+        });
+        // admin dan hanya user
+        Route::get('inventaris/cetak', [InventarisController::class, 'cetakInventaris'])->name('inventaris.cetak');
+        Route::get('inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
         Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
         Route::resource('inventaris', InventarisController::class);
-        Route::resource('labs', LabController::class);
-        Route::resource('sumber-dana', SumberDanaController::class);
-        Route::resource('user', UserController::class);
-        Route::prefix('backup')->name('backup.')->group(function () {
-            Route::get('/database', [BackupController::class, 'indexDatabase'])->name('database');
-            Route::get('/database/download', [BackupController::class, 'backupDatabase'])->name('database.download');
-            Route::get('/csv', [BackupController::class, 'indexCsv'])->name('csv');
-            Route::get('/csv/download/{table}', [BackupController::class, 'exportCsv'])->name('csv.download');
-        });
     });

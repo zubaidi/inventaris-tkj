@@ -16,12 +16,13 @@ class EnsureUserIsAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->user()) {
-            return redirect()->route('login')   // ← route 'login' harus ada
-                ->with('error', 'Silakan login dulu.');
+            return redirect('/login')->with('error', 'Silakan login dulu.');
         }
 
         if (! $request->user()->isAdmin()) {
-            abort(403, 'Akses ditolak. Hanya admin yang boleh masuk.');
+            return redirect()
+                ->route('admin.inventaris.index')
+                ->with('error', 'Akses ditolak. Halaman ini hanya untuk admin.');
         }
 
         return $next($request);
