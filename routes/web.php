@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\LabController;
 use App\Http\Controllers\SumberDanaController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +33,6 @@ Route::get('/sumber-dana', [SumberDanaController::class, 'publicIndex'])->name('
 // Export Excel (publik juga bisa)
 Route::get('/export-excel', [HomeController::class, 'export'])->name('export.excel');
 
-
 /*
 |--------------------------------------------------------------------------
 | ZONA AUTH (Login & Logout)
@@ -48,7 +49,6 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-
 /*
 |--------------------------------------------------------------------------
 | ZONA ADMIN (Wajib Login + Middleware 'admin')
@@ -61,18 +61,19 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
-        // Dashboard admin
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-        // CRUD Inventaris
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/inventaris/cetak', [InventarisController::class, 'cetakInventaris'])
+            ->name('inventaris.cetak');
         Route::get('/inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
+        Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
         Route::resource('inventaris', InventarisController::class);
-
-        // CRUD Lab
         Route::resource('labs', LabController::class);
-
-        // CRUD Sumber Dana
         Route::resource('sumber-dana', SumberDanaController::class);
+        Route::resource('user', UserController::class);
+        Route::prefix('backup')->name('backup.')->group(function () {
+            Route::get('/database', [BackupController::class, 'indexDatabase'])->name('database');
+            Route::get('/database/download', [BackupController::class, 'backupDatabase'])->name('database.download');
+            Route::get('/csv', [BackupController::class, 'indexCsv'])->name('csv');
+            Route::get('/csv/download/{table}', [BackupController::class, 'exportCsv'])->name('csv.download');
+        });
     });
-

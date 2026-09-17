@@ -23,8 +23,8 @@
                 </a>
             </div>
             <a class="navbar-toggler nav-icon-hover-bg rounded-circle p-0 mx-0 border-0" href="javascript:void(0)"
-                data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-                aria-expanded="false" aria-label="Toggle navigation">
+                data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <i class="ti ti-dots fs-7"></i>
             </a>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -68,18 +68,20 @@
                                         <img src="{{ asset('assets/image/user-1.jpg') }}" class="rounded-circle"
                                             width="80" height="80" alt="modernize-img" />
                                         <div class="ms-3">
-                                            <h5 class="mb-1 fs-3">Mathew Anderson</h5>
-                                            <span class="mb-1 d-block">Designer</span>
+                                            <h5 class="mb-1 fs-3">{{ auth()->user()->name }}</h5>
+                                            <span class="mb-1 d-block">Administrator</span>
                                             <p class="mb-0 d-flex align-items-center gap-2">
-                                                <i class="ti ti-mail fs-4"></i> <a href="/cdn-cgi/l/email-protection"
-                                                    class="__cf_email__"
-                                                    data-cfemail="a5cccbc3cae5c8cac1c0d7cbccdfc08bc6cac8">[email&#160;protected]</a>
+                                                <i class="ti ti-mail fs-4"></i> {{ auth()->user()->email }}
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="message-body">
-                                        <a href="{{ route('logout') }}"
-                                            class="btn btn-outline-primary">Log Out</a>
+                                    <div class="d-grid py-4 px-7 pt-8">
+                                        <form action="{{ route('logout') }}" method="post">
+                                            @csrf
+                                            <button class="btn btn-danger w-100">
+                                                <i class="ti ti-logout me-1"></i> Log Out
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

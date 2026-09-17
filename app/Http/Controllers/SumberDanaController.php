@@ -13,11 +13,10 @@ class SumberDanaController extends Controller
     public function publicIndex()
     {
         $sumberDanas = SumberDana::withCount('inventaris')
-            ->withSum('inventaris', 'jumlah_total')
-            ->orderBy('nama')
-            ->get();
+        ->orderBy('nama')
+        ->paginate(10);
 
-        return view('sumber-dana.index', compact('sumberDanas'));
+        return view('admin.sumberdana.index', compact('sumberDanas'));
     }
 
     /**
@@ -26,7 +25,6 @@ class SumberDanaController extends Controller
     public function index()
     {
         $sumberDanas = SumberDana::withCount('inventaris')
-            ->withSum('inventaris', 'jumlah_total')
             ->orderBy('nama')
             ->get();
 

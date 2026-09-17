@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lab;
+use App\Models\Inventaris;
 use Illuminate\Http\Request;
 
 class LabController extends Controller
@@ -10,7 +11,10 @@ class LabController extends Controller
     public function publicIndex()
     {
         $labs = Lab::withCount('inventaris')
-            ->withSum('inventaris', 'jumlah_total')
+            ->addSelect([
+                'total_aset' => Inventaris::selectRaw('COALESCE(SUM(volume * harga_satuan), 0)')
+                    ->whereColumn('lab_id', 'labs.id'),
+            ])
             ->orderBy('nama_lab')
             ->get();
 
@@ -23,19 +27,10 @@ class LabController extends Controller
     public function index()
     {
         $labs = Lab::withCount('inventaris')
-            ->withSum('inventaris', 'jumlah_total')
             ->orderBy('nama_lab')
-            ->get();
+            ->paginate(10);
 
         return view('admin.labs.index', compact('labs'));
-    }
-
-    /**
-     * Admin: form tambah lab.
-     */
-    public function create()
-    {
-        return view('admin.labs.create');
     }
 
     public function show($id)
@@ -49,8 +44,8 @@ class LabController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_lab'   => 'required|string|max:255|unique:labs,nama_lab',
-            'lokasi'     => 'nullable|string|max:255',
+            'nama_lab' => 'required|string|max:255|unique:labs,nama_lab',
+            'lokasi' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
         ]);
 
@@ -62,16 +57,6 @@ class LabController extends Controller
     }
 
     /**
-     * Admin: form edit lab.
-     */
-    public function edit($id)
-    {
-        $lab = Lab::findOrFail($id);
-
-        return view('admin.labs.edit', compact('lab'));
-    }
-
-    /**
      * Admin: update lab.
      */
     public function update(Request $request, $id)
@@ -79,8 +64,8 @@ class LabController extends Controller
         $lab = Lab::findOrFail($id);
 
         $validated = $request->validate([
-            'nama_lab'   => 'required|string|max:255|unique:labs,nama_lab,' . $id,
-            'lokasi'     => 'nullable|string|max:255',
+            'nama_lab' => 'required|string|max:255|unique:labs,nama_lab,'.$id,
+            'lokasi' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
         ]);
 

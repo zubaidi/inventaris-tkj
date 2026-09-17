@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventaris extends Model
 {
+    use HasFactory, SoftDeletes;
     protected $table = 'inventaris';
 
     protected $fillable = [
@@ -17,7 +20,6 @@ class Inventaris extends Model
         'satuan',
         'tahun_pembelian',
         'harga_satuan',
-        'jumlah_total',
         'kondisi',
         'keterangan',
         'lab_id',
@@ -29,20 +31,34 @@ class Inventaris extends Model
         'volume' => 'integer',
         'tahun_pembelian' => 'integer',
         'harga_satuan' => 'decimal:2',
-        'jumlah_total' => 'decimal:2',
     ];
 
     /**
-     * Auto-hitung jumlah_total = volume * harga_satuan.
-     * Dijalankan otomatis setiap kali data disimpan (create/update).
+     * Accessor: hitung jumlah_total dari volume * harga_satuan.
+     * Nggak disimpen di DB, dihitung on-the-fly.
+     * Pemakaian: $barang->jumlah_total
      */
-    protected static function booted(): void
+    public function getJumlahTotalAttribute()
     {
-        static::saving(function ($item) {
-            $item->jumlah_total = $item->volume * $item->harga_satuan;
-        });
+        return (float) $this->volume * (float) $this->harga_satuan;
+    }
+    /**
+     * Accessor: format jumlah total ke Rupiah.
+     */
+    public function getJumlahTotalRupiahAttribute()
+    {
+        return 'Rp ' . number_format($this->jumlah_total, 0, ',', '.');
     }
 
+    /**
+     * Accessor: format harga satuan ke Rupiah.
+     * Pemakaian: $barang->harga_satuan_rupiah
+     */
+    public function getHargaSatuanRupiahAttribute()
+    {
+        return 'Rp '.number_format(floatval($this->harga_satuan), 0, ',', '.');
+    }
+    /** ini relasi ke tabel lain */
     public function lab()
     {
         return $this->belongsTo(Lab::class);
@@ -52,7 +68,7 @@ class Inventaris extends Model
     {
         return $this->belongsTo(SumberDana::class);
     }
-
+    
     public function scopeKondisi($query, $kondisi)
     {
         return $query->where('kondisi', $kondisi);
@@ -75,20 +91,4 @@ class Inventaris extends Model
         });
     }
 
-    /**
-     * Accessor: format harga satuan ke Rupiah.
-     * Pemakaian: $barang->harga_satuan_rupiah
-     */
-    public function getHargaSatuanRupiahAttribute()
-    {
-        return 'Rp '.number_format(floatval($this->harga_satuan), 0, ',', '.');
-    }
-
-    /**
-     * Accessor: format jumlah total ke Rupiah.
-     */
-    public function getJumlahTotalRupiahAttribute()
-    {
-        return 'Rp '.number_format(floatval($this->jumlah_total), 0, ',', '.');
-    }
 }

@@ -15,7 +15,14 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        abort_unless($request->user()?->isAdmin(), 403);
+        if (! $request->user()) {
+            return redirect()->route('login')   // ← route 'login' harus ada
+                ->with('error', 'Silakan login dulu.');
+        }
+
+        if (! $request->user()->isAdmin()) {
+            abort(403, 'Akses ditolak. Hanya admin yang boleh masuk.');
+        }
 
         return $next($request);
     }

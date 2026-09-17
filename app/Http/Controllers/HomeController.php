@@ -9,12 +9,18 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $inventaris = Inventaris::with(['lab', 'sumberDana'])
-            ->when($request->filled('search'), fn ($query) => $query->search($request->input('search')))
-            ->latest()
-            ->paginate(10);
+        $search = $request->input('search');
+        $inventaris = collect();
 
-        return view('welcome', compact('inventaris'));
+        if ($search) {
+            $inventaris = Inventaris::with(['lab', 'sumberDana'])
+                ->where('nama_barang', 'like', "%{$search}%")
+                ->orWhere('no_inventaris', 'like', "%{$search}%")
+                ->latest()
+                ->get();
+        }
+
+        return view('home', compact('inventaris', 'search'));
     }
 
     public function show($id)

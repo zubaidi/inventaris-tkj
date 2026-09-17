@@ -5,8 +5,10 @@
         <!-- ---------------------------------- -->
         <div class="brand-logo d-flex align-items-center justify-content-between">
             <a href="../main/index.html" class="text-nowrap logo-img">
-                <img src="{{ asset('assets/image/dark-logo.svg') }}" class="dark-logo" alt="Logo-Dark" />
-                <img src="{{ asset('assets/image/dark-logo.svg') }}" class="light-logo" alt="Logo-light" />
+                <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark" width="105px"
+                    height="32px" />
+                <img src="{{ asset('assets/image/tkj1.png') }}" class="light-logo" alt="Logo-light" width="105px"
+                    height="32px" />
             </a>
             <a href="javascript:void(0)" class="sidebartoggler ms-auto text-decoration-none fs-5 d-block d-xl-none">
                 <i class="ti ti-x"></i>
@@ -26,7 +28,8 @@
                 <!-- Dashboard -->
                 <!-- ---------------------------------- -->
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="" id="get-url" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                        href="{{ route('admin.dashboard') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-aperture"></i>
                         </span>
@@ -42,7 +45,8 @@
                     <span class="hide-menu">Master</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('admin.labs.index') }}" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('admin.labs.*') ? 'active' : '' }}"
+                        href="{{ route('admin.labs.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-home"></i>
                         </span>
@@ -50,7 +54,8 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('admin.sumber-dana.index') }}" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('admin.sumber-dana.*') ? 'active' : '' }}"
+                        href="{{ route('admin.sumber-dana.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-building-bank"></i>
                         </span>
@@ -58,11 +63,21 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="../main/app-chat.html" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('admin.inventaris.index') ? 'active' : '' }}"
+                        href="{{ route('admin.inventaris.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-box-seam"></i>
                         </span>
                         <span class="hide-menu">Atur Inventaris</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('admin.inventaris.rekap') ? 'active' : '' }}"
+                        href="{{ route('admin.inventaris.rekap') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-clipboard-list"></i>
+                        </span>
+                        <span class="hide-menu">Rekap Inventaris</span>
                     </a>
                 </li>
                 <!-- ---------------------------------- -->
@@ -73,7 +88,8 @@
                     <span class="hide-menu">Pengaturan</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="../main/page-pricing.html" aria-expanded="false">
+                    <a class="sidebar-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}"
+                        href="{{ route('admin.user.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-users"></i>
                         </span>
@@ -81,7 +97,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="../main/page-faq.html" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('admin.backup.database') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-database-export"></i>
                         </span>
@@ -89,7 +105,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="../main/page-account-settings.html" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('admin.backup.csv') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-file-spreadsheet"></i>
                         </span>
@@ -105,13 +121,16 @@
                         height="40" alt="modernize-img" />
                 </div>
                 <div class="john-title">
-                    <h6 class="mb-0 fs-4 fw-semibold">Mathew</h6>
+                    <h6 class="mb-0 fs-4 fw-semibold">{{ auth()->user()->name }}</h6>
                     <span class="fs-2">Administrator</span>
                 </div>
-                <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="button"
-                    aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">
-                    <i class="ti ti-power fs-6"></i>
-                </button>
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="submit"
+                        aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">
+                        <i class="ti ti-power fs-6"></i>
+                    </button>
+                </form>
             </div>
         </div>
 

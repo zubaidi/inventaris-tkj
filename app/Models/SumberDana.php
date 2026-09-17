@@ -14,4 +14,19 @@ class SumberDana extends Model
     {
         return $this->hasMany(Inventaris::class);
     }
+
+    /**
+     * Accessor: total aset dari sumber dana ini.
+     */
+    public function getTotalAsetAttribute()
+    {
+        return $this->inventaris()
+            ->selectRaw('SUM(volume * harga_satuan) as total')
+            ->value('total') ?? 0;
+    }
+
+    public function getTotalAsetRupiahAttribute()
+    {
+        return 'Rp ' . number_format((float) $this->total_aset, 0, ',', '.');
+    }
 }
