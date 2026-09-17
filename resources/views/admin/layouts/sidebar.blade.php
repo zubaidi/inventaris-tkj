@@ -1,21 +1,11 @@
-@push('style')
-    <style>
-        html[data-bs-theme="light"] .dark-logo { display: block !important; }
-        html[data-bs-theme="light"] .light-logo { display: none !important; }
-        html[data-bs-theme="dark"] .dark-logo { display: none !important; }
-        html[data-bs-theme="dark"] .light-logo { display: block !important; }
-    </style>
-@endpush
 <!-- Sidebar Start -->
 <aside class="left-sidebar with-vertical">
     <div><!-- ---------------------------------- -->
         <!-- Start Vertical Layout Sidebar -->
         <!-- ---------------------------------- -->
         <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="../main/index.html" class="text-nowrap logo-img">
+            <a href="{{ route('admin.dashboard') }}" class="text-nowrap logo-img">
                 <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark" width="105px"
-                    height="32px" />
-                <img src="{{ asset('assets/image/tkj1.png') }}" class="light-logo" alt="Logo-light" width="105px"
                     height="32px" />
             </a>
             <a href="javascript:void(0)" class="sidebartoggler ms-auto text-decoration-none fs-5 d-block d-xl-none">

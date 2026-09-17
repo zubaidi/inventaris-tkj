@@ -1,19 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-color-theme="Blue_Theme" data-layout="vertical">
+<html lang="en" dir="ltr" data-color-theme="Blue_Theme" data-layout="vertical" data-bs-theme="light">
 
 <head>
     <!-- Required meta tags -->
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Save theme over -->
-    <script>
-        (function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-bs-theme', theme);
-        })();
-    </script>
 
     <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/logo.png') }}" />
@@ -49,82 +41,6 @@
 
     <!-- solar icons -->
     <script src="{{ asset('assets/js/iconify-icon.min.js') }}"></script>
-    <script>
-        (function() {
-            const html = document.documentElement;
-
-            // Fungsi apply tema
-            function applyTheme(theme) {
-                html.setAttribute('data-bs-theme', theme);
-                if (theme === 'dark') {
-                    document.body.classList.add('dark');
-                } else {
-                    document.body.classList.remove('dark');
-                }
-            }
-
-            // Fungsi simpan & apply
-            function setTheme(theme) {
-                localStorage.setItem('theme', theme);
-                applyTheme(theme);
-            }
-
-            // 1. Apply dari localStorage pas load
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
-
-            // 2. Re-apply setelah semua script selesai (Modernize sering override)
-            window.addEventListener('load', function() {
-                setTimeout(function() {
-                    applyTheme(localStorage.getItem('theme') || 'light');
-                }, 100);
-            });
-
-            // 3. MutationObserver — kalau ada yang coba ngubah, balikin
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.attributeName === 'data-bs-theme') {
-                        const current = html.getAttribute('data-bs-theme');
-                        const saved = localStorage.getItem('theme') || 'light';
-                        if (current !== saved) {
-                            html.setAttribute('data-bs-theme', saved);
-                        }
-                    }
-                });
-            });
-            observer.observe(html, {
-                attributes: true,
-                attributeFilter: ['data-bs-theme']
-            });
-
-            // 4. Handler toggle dark
-            document.querySelectorAll('.dark-layout').forEach(function(el) {
-                el.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setTheme('dark');
-                });
-            });
-
-            // 5. Handler toggle light
-            document.querySelectorAll('.light-layout').forEach(function(el) {
-                el.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setTheme('light');
-                });
-            });
-
-            // 6. Handle sidebar click — re-apply setelah navigasi
-            document.querySelectorAll('.sidebar-link, .nav-link').forEach(function(el) {
-                el.addEventListener('click', function() {
-                    setTimeout(function() {
-                        applyTheme(localStorage.getItem('theme') || 'light');
-                    }, 50);
-                });
-            });
-        })();
-    </script>
     @stack('script')
     @if (session('success'))
         <script>

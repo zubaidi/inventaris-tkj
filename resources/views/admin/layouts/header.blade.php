@@ -13,13 +13,13 @@
             </ul>
 
             <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
-
+                Sistem Inventaris TKJ SMK Syafi'i Akrom
             </ul>
 
             <div class="d-block d-lg-none py-4">
-                <a href="../main/index.html" class="text-nowrap logo-img">
-                    <img src="{{ asset('assets/image/dark-logo.svg') }}" class="dark-logo" alt="Logo-Dark" />
-                    <img src="{{ asset('assets/image/dark-logo.svg') }}" class="light-logo" alt="Logo-light" />
+                <a href="{{ route('admin.dashboard') }}" class="text-nowrap logo-img">
+                    <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark" width="120" height="45"/>
+                    {{-- <img src="{{ asset('assets/image/tkj1.png') }}" class="light-logo" alt="Logo-light" width="120" height="45"/> --}}
                 </a>
             </div>
             <a class="navbar-toggler nav-icon-hover-bg rounded-circle p-0 mx-0 border-0" href="javascript:void(0)"
@@ -29,23 +29,7 @@
             </a>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <div class="d-flex align-items-center justify-content-between">
-
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
-                        <!-- ------------------------------- -->
-                        <!-- start theme Dropdown -->
-                        <!-- ------------------------------- -->
-                        <li class="nav-item nav-icon-hover-bg rounded-circle">
-                            <a class="nav-link moon dark-layout" href="javascript:void(0)">
-                                <i class="ti ti-moon moon"></i>
-                            </a>
-                            <a class="nav-link sun light-layout" href="javascript:void(0)">
-                                <i class="ti ti-sun sun"></i>
-                            </a>
-                        </li>
-                        <!-- ------------------------------- -->
-                        <!-- end theme Dropdown -->
-                        <!-- ------------------------------- -->
-
                         <!-- ------------------------------- -->
                         <!-- start profile Dropdown -->
                         <!-- ------------------------------- -->

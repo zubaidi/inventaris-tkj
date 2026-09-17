@@ -98,7 +98,7 @@
                                         oleh
                                         <a href="http://rplsmksa.com" target="_blank"
                                             class="text-decoration-none fw-semibold" style="color: #60a5fa;">
-                                            UP Codepelita
+                                            UP Codepelita RPL SMKSA
                                         </a>
                                     </div>
                                 </div>
