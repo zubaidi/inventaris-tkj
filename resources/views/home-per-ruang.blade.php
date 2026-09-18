@@ -75,7 +75,7 @@
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
         <div class="container">
             <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center gap-2">
-                <img src="{{ asset('assets/image/logo.png') }}" alt="TKJ" width="36" height="36">
+                <img src="{{ asset('assets/image/logo.png') }}" alt="TKJ" width="34" height="36">
                 <span class="fw-bold text-dark">Inventaris TKJ</span>
             </a>
             <a href="{{ route('login') }}" class="btn btn-primary">
@@ -106,21 +106,26 @@
             {{-- Info Lab Card --}}
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
-                                style="width: 56px; height: 56px;">
-                                <i class="ti ti-building fs-5 text-primary"></i>
-                            </div>
-                            <div>
-                                <h5 class="fw-bold mb-1">{{ $lab->nama_lab }}</h5>
-                                <p class="mb-0 text-muted small">
-                                    <i class="ti ti-map-pin me-1"></i>
-                                    {{ $lab->lokasi ?? 'Lokasi tidak diset' }}
-                                </p>
+                    <div class="row align-items-center g-3">
+                        {{-- Kiri: Icon + Info Lab --}}
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center shrink-0"
+                                    style="width: 56px; height: 56px;">
+                                    <i class="ti ti-building fs-5 text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">{{ $lab->nama_lab }}</h5>
+                                    <p class="mb-0 text-muted small">
+                                        <i class="ti ti-map-pin me-1"></i>
+                                        {{ $lab->lokasi ?? 'Lokasi tidak diset' }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <div class="text-end">
+
+                        {{-- Kanan: Total Aset --}}
+                        <div class="col-md-4 text-md-end">
                             <small class="text-muted d-block mb-1">Total Nilai Asset</small>
                             <h4 class="fw-bold mb-0 text-primary">
                                 Rp {{ number_format((float) $grandTotal, 0, ',', '.') }}

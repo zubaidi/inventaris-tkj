@@ -13,11 +13,11 @@ class HomeController extends Controller
         $search = $request->input('search');
         $query = Inventaris::with(['lab', 'sumberDana']);
 
-        if ($request->filled('search')) {
-            $query->search($request->search);
+        if ($search) {
+            $query->search($search);
         }
 
-        $inventaris = $query->latest()->get();
+        $inventaris = $query->latest()->paginate(15)->withQueryString();
 
         // Data buat Tab 2 — Rekap per Lab
         $labs = Lab::withCount('inventaris')

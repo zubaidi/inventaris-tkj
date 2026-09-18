@@ -29,9 +29,15 @@
             border-bottom: 3px solid transparent;
             color: #64748b;
             font-weight: 600;
+            font-size: 0.85rem;
+            padding: 8px 16px;
             padding: 12px 24px;
             border-radius: 0;
             transition: all 0.2s;
+        }
+
+        .nav-tabs-modern .nav-link i {
+            font-size: 0.9rem;
         }
 
         .nav-tabs-modern .nav-link:hover {
@@ -49,11 +55,17 @@
         .lab-card {
             transition: all 0.2s ease;
             cursor: pointer;
+            border-radius: 12px;
         }
 
         .lab-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.12) !important;
+        }
+
+        .lab-card:hover .ti-arrow-narrow-right {
+            transform: translateX(4px);
+            transition: transform 0.2s ease;
         }
 
         @media (max-width: 767.98px) {
@@ -116,7 +128,7 @@
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
         <div class="container">
             <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center gap-2">
-                <img src="{{ asset('assets/image/logo.png') }}" alt="TKJ" width="36" height="36">
+                <img src="{{ asset('assets/image/logo.png') }}" alt="TKJ" width="33" height="36">
                 <span class="fw-bold text-dark">Inventaris TKJ</span>
             </a>
             <a href="{{ route('login') }}" class="btn btn-primary">
@@ -184,10 +196,10 @@
                             @if ($search)
                                 <div class="mb-3 text-muted small">
                                     Menampilkan hasil untuk <strong>"{{ $search }}"</strong> —
-                                    {{ $inventaris->count() }} data ditemukan
+                                    {{ $inventaris->total() }} data ditemukan
                                 </div>
 
-                                @if ($inventaris->count())
+                                @if ($inventaris->total())
                                     <div class="card border-0 shadow-sm">
                                         <div class="card-body p-0">
                                             <div class="table-wrapper">
@@ -203,12 +215,15 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($inventaris as $item)
+                                                        @foreach ($inventaris as $i => $item)
                                                             <tr>
+                                                                {{-- Nomor urut global --}}
                                                                 <td class="text-center" data-label="No">
-                                                                    {{ $loop->iteration }}</td>
+                                                                    {{ $inventaris->firstItem() + $i }}
+                                                                </td>
                                                                 <td data-label="No Inventaris">
-                                                                    {{ $item->no_inventaris }}</td>
+                                                                    {{ $item->no_inventaris }}
+                                                                </td>
                                                                 <td data-label="Nama Barang">{{ $item->nama_barang }}
                                                                 </td>
                                                                 <td class="text-center" data-label="Kondisi">
@@ -229,6 +244,24 @@
                                                         @endforeach
                                                     </tbody>
                                                 </table>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer bg-white border-top py-3">
+                                            <div
+                                                class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                                <small class="text-muted">
+                                                    Menampilkan
+                                                    <strong>{{ $inventaris->firstItem() ?? 0 }}</strong>
+                                                    –
+                                                    <strong>{{ $inventaris->lastItem() ?? 0 }}</strong>
+                                                    dari
+                                                    <strong>{{ $inventaris->total() }}</strong> barang
+                                                </small>
+                                                <div>
+                                                    @if ($inventaris->hasPages())
+                                                        {{ $inventaris->links() }}
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -258,37 +291,34 @@
                             </div>
                             <div class="row g-3">
                                 @forelse ($labs as $lab)
-                                    <div class="col-md-6 col-lg-4">
+                                    <div class="col-6 col-md-4 col-lg-3">
                                         <a href="{{ route('home.per-ruang', $lab->id) }}"
                                             class="text-decoration-none">
                                             <div class="card border-0 shadow-sm h-100 lab-card">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-center gap-3 mb-3">
-                                                        <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center shrink-0"
-                                                            style="width: 48px; height: 48px;">
-                                                            <i class="ti ti-building fs-5 text-primary"></i>
-                                                        </div>
-                                                        <div class="grow">
-                                                            <h6 class="fw-bold mb-0 text-dark">
-                                                                {{ $lab->nama_lab }}
-                                                            </h6>
-                                                            <small class="text-muted">
-                                                                <i class="ti ti-map-pin"
-                                                                    style="font-size: 0.75rem;"></i>
-                                                                {{ $lab->lokasi ?? 'Lokasi tidak diset' }}
-                                                            </small>
-                                                        </div>
+                                                <div class="card-body p-3">
+                                                    {{-- Icon --}}
+                                                    <div class="rounded-3 bg-primary-subtle d-flex align-items-center justify-content-center mb-3"
+                                                        style="width: 44px; height: 44px;">
+                                                        <i class="ti ti-building fs-5 text-primary"></i>
                                                     </div>
 
+                                                    {{-- Info Lab --}}
+                                                    <h6 class="fw-semibold mb-1 text-dark">
+                                                        {{ $lab->nama_lab }}
+                                                    </h6>
+                                                    <p class="text-muted mb-3" style="font-size: 0.75rem;">
+                                                        {{ \Illuminate\Support\Str::limit($lab->lokasi ?? 'Lokasi tidak diset', 30) }}
+                                                    </p>
+
+                                                    {{-- Footer --}}
                                                     <div
-                                                        class="d-flex align-items-center justify-content-between pt-3 border-top">
-                                                        <div>
-                                                            <small class="text-muted d-block">Jumlah Barang</small>
-                                                            <span class="fw-bold text-dark">
-                                                                {{ $lab->inventaris_count }} item
-                                                            </span>
-                                                        </div>
-                                                        <i class="ti ti-arrow-right text-primary"></i>
+                                                        class="d-flex align-items-center justify-content-between pt-2 border-top">
+                                                        <small class="text-muted">
+                                                            <i class="ti ti-box" style="font-size: 0.75rem;"></i>
+                                                            {{ $lab->inventaris_count }} item
+                                                        </small>
+                                                        <i class="ti ti-arrow-narrow-right text-primary"
+                                                            style="font-size: 0.9rem;"></i>
                                                     </div>
                                                 </div>
                                             </div>
@@ -299,8 +329,8 @@
                                         <div class="card border-0 shadow-sm">
                                             <div class="card-body text-center py-5">
                                                 <i class="ti ti-building-off fs-1 text-muted mb-3"></i>
-                                                <h5 class="fw-semibold">Belum ada data lab</h5>
-                                                <p class="text-muted mb-0">Data lab akan muncul di sini</p>
+                                                <h6 class="fw-semibold">Belum ada data lab</h6>
+                                                <p class="text-muted small mb-0">Data lab akan muncul di sini</p>
                                             </div>
                                         </div>
                                     </div>
