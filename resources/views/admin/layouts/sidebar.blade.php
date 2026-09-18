@@ -83,6 +83,15 @@
                         <span class="hide-menu">Rekap Inventaris</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ request()->routeIs('admin.inventaris.rekap-per-ruang') ? 'active' : '' }}"
+                        href="{{ route('admin.inventaris.rekap-per-ruang') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-home-stats"></i>
+                        </span>
+                        <span class="hide-menu">Rekap Per Ruang</span>
+                    </a>
+                </li>
                 @if ($isAdmin)
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>

@@ -23,6 +23,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Detail 1 barang
 Route::get('/barang/{id}', [HomeController::class, 'show'])->name('barang.show');
+Route::get('/lab/{id}', [HomeController::class, 'perRuang'])->name('home.per-ruang');
 
 // Daftar lab (publik)
 Route::get('/lab', [LabController::class, 'publicIndex'])->name('lab.index');
@@ -77,5 +78,6 @@ Route::middleware(['auth'])
         Route::get('inventaris/cetak', [InventarisController::class, 'cetakInventaris'])->name('inventaris.cetak');
         Route::get('inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
         Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
+        Route::get('inventaris/rekap-per-ruang', [InventarisController::class, 'rekapPerRuang'])->name('inventaris.rekap-per-ruang');
         Route::resource('inventaris', InventarisController::class);
     });

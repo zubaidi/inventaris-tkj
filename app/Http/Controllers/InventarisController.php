@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InventarisExport;
 use App\Models\Inventaris;
 use App\Models\Lab;
 use App\Models\SumberDana;
 use Illuminate\Http\Request;
-use App\Exports\InventarisExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class InventarisController extends Controller
@@ -280,6 +280,38 @@ class InventarisController extends Controller
         $labs = Lab::orderBy('nama_lab')->get();
 
         return view('admin.inventaris.rekap', compact('rekap', 'grandTotalKeseluruhan', 'labs'));
+    }
+
+    public function rekapPerRuang(Request $request)
+    {
+        // Dropdown filter — ambil semua lab
+        $labs = Lab::orderBy('nama_lab')->get();
+
+        $labId = $request->input('lab_id');
+        $labTerpilih = null;
+        $inventaris = collect();   // default kosong
+        $grandTotal = 0;
+
+        // Kalau lab dipilih, baru ambil data
+        if ($labId) {
+            $labTerpilih = Lab::find($labId);
+
+            if ($labTerpilih) {
+                $inventaris = Inventaris::with(['lab', 'sumberDana'])
+                    ->where('lab_id', $labId)
+                    ->orderBy('nama_barang')
+                    ->get();
+
+                $grandTotal = $inventaris->sum(fn ($i) => $i->volume * $i->harga_satuan);
+            }
+        }
+
+        return view('admin.inventaris.rekap-per-ruang', compact(
+            'labs',
+            'inventaris',
+            'labTerpilih',
+            'grandTotal'
+        ));
     }
 
     public function cetakInventaris(Request $request)

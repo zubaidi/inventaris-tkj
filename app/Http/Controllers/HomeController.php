@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventaris;
+use App\Models\Lab;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -10,17 +11,34 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $inventaris = collect();
+        $query = Inventaris::with(['lab', 'sumberDana']);
 
-        if ($search) {
-            $inventaris = Inventaris::with(['lab', 'sumberDana'])
-                ->where('nama_barang', 'like', "%{$search}%")
-                ->orWhere('no_inventaris', 'like', "%{$search}%")
-                ->latest()
-                ->get();
+        if ($request->filled('search')) {
+            $query->search($request->search);
         }
 
-        return view('home', compact('inventaris', 'search'));
+        $inventaris = $query->latest()->get();
+
+        // Data buat Tab 2 — Rekap per Lab
+        $labs = Lab::withCount('inventaris')
+            ->orderBy('nama_lab')
+            ->get();
+
+        return view('home', compact('inventaris', 'labs', 'search'));
+    }
+
+    public function perRuang($id)
+    {
+        $lab = Lab::findOrFail($id);
+
+        $inventaris = Inventaris::with(['lab', 'sumberDana'])
+            ->where('lab_id', $id)
+            ->orderBy('nama_barang')
+            ->get();
+
+        $grandTotal = $inventaris->sum(fn ($i) => $i->volume * $i->harga_satuan);
+
+        return view('home-per-ruang', compact('lab', 'inventaris', 'grandTotal'));
     }
 
     public function show($id)

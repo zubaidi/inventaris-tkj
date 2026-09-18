@@ -6,22 +6,54 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Favicon icon-->
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/logo.png') }}" />
-
-    <!-- Core Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
-
     <title>@yield('title', 'Sistem Inventaris TKJ')</title>
-    <!-- Owl Carousel  -->
     <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/tabler-icons/tabler-icons.css') }}">
 
-    {{-- Custom CSS untuk tabel responsif --}}
     <style>
         .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+        }
+
+        /* Tab Styling */
+        .nav-tabs-modern {
+            border-bottom: 2px solid #e2e8f0;
+            gap: 4px;
+        }
+
+        .nav-tabs-modern .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 0;
+            transition: all 0.2s;
+        }
+
+        .nav-tabs-modern .nav-link:hover {
+            color: #3b82f6;
+            border-bottom-color: #cbd5e1;
+        }
+
+        .nav-tabs-modern .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            background: transparent;
+        }
+
+        /* Lab Card Hover */
+        .lab-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
         }
 
         @media (max-width: 767.98px) {
@@ -93,99 +125,207 @@
         </div>
     </nav>
 
-    <!-- Search Section -->
-    <section class="py-5 bg-light">
+    <!-- Header + Tabs -->
+    <section class="bg-light pt-5 pb-0">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body p-4">
-                            <h2 class="h4 fw-bold mb-2">Cari Barang</h2>
-                            <p class="text-muted small mb-4">
-                                Ketik nama barang atau kode barang untuk melihat data inventaris
-                            </p>
-                            <form action="{{ route('home') }}" method="GET" class="d-flex gap-2">
-                                <input type="text" name="search" class="form-control form-control-lg"
-                                    placeholder="Contoh: AC, Lab Komputer, INV-001..."
-                                    value="{{ $search ?? '' }}" autofocus>
-                                <button type="submit" class="btn btn-primary btn-lg px-4">
-                                    <i class="ti ti-search"></i> Cari
-                                </button>
-                            </form>
-                        </div>
+                <div class="col-lg-10">
+                    {{-- Judul Halaman --}}
+                    <div class="text-center mb-4">
+                        <h1 class="h3 fw-bold text-dark mb-2">Sistem Inventaris TKJ</h1>
+                        <p class="text-muted mb-0">
+                            Cari barang atau lihat data inventaris per ruang lab
+                        </p>
                     </div>
+
+                    {{-- Tabs Navigation --}}
+                    <ul class="nav nav-tabs nav-tabs-modern justify-content-center" id="homeTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="tab-cari-btn" data-bs-toggle="tab"
+                                data-bs-target="#tab-cari" type="button" role="tab" aria-controls="tab-cari"
+                                aria-selected="true">
+                                <i class="ti ti-search me-1"></i> Cari Item
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-ruang-btn" data-bs-toggle="tab" data-bs-target="#tab-ruang"
+                                type="button" role="tab" aria-controls="tab-ruang" aria-selected="false">
+                                <i class="ti ti-building me-1"></i> Lihat Per Ruang
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Results Section -->
-    <section class="py-5">
+    <!-- Tab Content -->
+    <section class="py-4">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    @if ($search)
-                        <div class="mb-3 text-muted small">
-                            Menampilkan hasil pencarian untuk <strong>"{{ $search }}"</strong> — {{ $inventaris->count() }} data ditemukan
-                        </div>
 
-                        @if ($inventaris->count())
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body p-0">
-                                    <div class="table-wrapper">
-                                        <table class="table table-hover mb-0" id="tabel-inventaris">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th class="text-center" style="width: 50px;">No</th>
-                                                    <th>No Inventaris</th>
-                                                    <th>Nama Barang</th>
-                                                    <th class="text-center">Kondisi</th>
-                                                    <th>Lab</th>
-                                                    <th class="text-end">Harga</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($inventaris as $item)
-                                                    <tr>
-                                                        <td class="text-center" data-label="No">{{ $loop->iteration }}</td>
-                                                        <td data-label="No Inventaris">{{ $item->no_inventaris }}</td>
-                                                        <td data-label="Nama Barang">{{ $item->nama_barang }}</td>
-                                                        <td class="text-center" data-label="Kondisi">
-                                                            @if ($item->kondisi === 'Baik')
-                                                                <span class="badge bg-success-subtle text-success">Baik</span>
-                                                            @else
-                                                                <span class="badge bg-danger-subtle text-danger">Rusak</span>
-                                                            @endif
-                                                        </td>
-                                                        <td data-label="Lab">{{ $item->lab->nama_lab ?? '-' }}</td>
-                                                        <td class="text-end fw-semibold" data-label="Harga">
-                                                            {{ $item->jumlah_total_rupiah }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                    <div class="tab-content" id="homeTabsContent">
+
+                        {{-- ============================================
+                         | TAB 1: CARI ITEM
+                         ============================================ --}}
+                        <div class="tab-pane fade show active" id="tab-cari" role="tabpanel"
+                            aria-labelledby="tab-cari-btn">
+
+                            {{-- Search Box --}}
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-2">Cari Barang</h5>
+                                    <p class="text-muted small mb-3">
+                                        Ketik nama barang, kode inventaris, atau spesifikasi
+                                    </p>
+                                    <form action="{{ route('home') }}" method="GET" class="d-flex gap-2">
+                                        <input type="text" name="search" class="form-control form-control-lg"
+                                            placeholder="Contoh: AC, Router, SMKSA/TKJ7..." value="{{ $search ?? '' }}"
+                                            autofocus>
+                                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                                            <i class="ti ti-search"></i> Cari
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {{-- Hasil Pencarian --}}
+                            @if ($search)
+                                <div class="mb-3 text-muted small">
+                                    Menampilkan hasil untuk <strong>"{{ $search }}"</strong> —
+                                    {{ $inventaris->count() }} data ditemukan
+                                </div>
+
+                                @if ($inventaris->count())
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body p-0">
+                                            <div class="table-wrapper">
+                                                <table class="table table-hover mb-0" id="tabel-inventaris">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th class="text-center" style="width: 50px;">No</th>
+                                                            <th>No Inventaris</th>
+                                                            <th>Nama Barang</th>
+                                                            <th class="text-center">Kondisi</th>
+                                                            <th>Lab</th>
+                                                            <th class="text-end">Harga</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($inventaris as $item)
+                                                            <tr>
+                                                                <td class="text-center" data-label="No">
+                                                                    {{ $loop->iteration }}</td>
+                                                                <td data-label="No Inventaris">
+                                                                    {{ $item->no_inventaris }}</td>
+                                                                <td data-label="Nama Barang">{{ $item->nama_barang }}
+                                                                </td>
+                                                                <td class="text-center" data-label="Kondisi">
+                                                                    @if ($item->kondisi === 'Baik')
+                                                                        <span
+                                                                            class="badge bg-success-subtle text-success">Baik</span>
+                                                                    @else
+                                                                        <span
+                                                                            class="badge bg-danger-subtle text-danger">Rusak</span>
+                                                                    @endif
+                                                                </td>
+                                                                <td data-label="Lab">{{ $item->lab->nama_lab ?? '-' }}
+                                                                </td>
+                                                                <td class="text-end fw-semibold" data-label="Harga">
+                                                                    {{ $item->jumlah_total_rupiah }}
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body text-center py-5">
+                                            <i class="ti ti-search-off fs-1 text-muted mb-3"></i>
+                                            <h5 class="fw-semibold">Barang tidak ditemukan</h5>
+                                            <p class="text-muted mb-0">Coba kata kunci lain, misal: AC, Printer, Router
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endif
+                            @else
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body text-center py-5">
+                                        <i class="ti ti-search fs-1 text-muted mb-3"></i>
+                                        <h5 class="fw-semibold">Mulai ketik untuk mencari barang</h5>
+                                        <p class="text-muted mb-0">Hasil pencarian akan muncul di sini</p>
                                     </div>
                                 </div>
+                            @endif
+                        </div>
+
+                        {{-- ============================================
+                         | TAB 2: LIHAT PER RUANG
+                         ============================================ --}}
+                        <div class="tab-pane fade" id="tab-ruang" role="tabpanel" aria-labelledby="tab-ruang-btn">
+
+                            <div class="mb-3 text-muted small">
+                                Pilih lab/ruang untuk melihat daftar barang di dalamnya
                             </div>
-                        @else
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-body text-center py-5">
-                                    <i class="ti ti-search fs-1 text-muted mb-3"></i>
-                                    <h5 class="fw-semibold">Barang tidak ditemukan</h5>
-                                    <p class="text-muted mb-0">Coba kata kunci lain, misal: AC, Printer, Lab</p>
-                                </div>
-                            </div>
-                        @endif
-                    @else
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body text-center py-5">
-                                <i class="ti ti-search fs-1 text-muted mb-3"></i>
-                                <h5 class="fw-semibold">Mulai ketik untuk mencari barang</h5>
-                                <p class="text-muted mb-0">Hasil pencarian akan muncul di sini</p>
+
+                            <div class="row g-3">
+                                @forelse ($labs as $lab)
+                                    <div class="col-md-6 col-lg-4">
+                                        <a href="{{ route('home.per-ruang', $lab->id) }}"
+                                            class="text-decoration-none">
+                                            <div class="card border-0 shadow-sm h-100 lab-card">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                                        <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                            style="width: 48px; height: 48px;">
+                                                            <i class="ti ti-building fs-5 text-primary"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="fw-bold mb-0 text-dark">
+                                                                {{ $lab->nama_lab }}
+                                                            </h6>
+                                                            <small class="text-muted">
+                                                                <i class="ti ti-map-pin"
+                                                                    style="font-size: 0.75rem;"></i>
+                                                                {{ $lab->lokasi ?? 'Lokasi tidak diset' }}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        class="d-flex align-items-center justify-content-between pt-3 border-top">
+                                                        <div>
+                                                            <small class="text-muted d-block">Jumlah Barang</small>
+                                                            <span class="fw-bold text-dark">
+                                                                {{ $lab->inventaris_count }} item
+                                                            </span>
+                                                        </div>
+                                                        <i class="ti ti-arrow-right text-primary"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                @empty
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body text-center py-5">
+                                                <i class="ti ti-building-off fs-1 text-muted mb-3"></i>
+                                                <h5 class="fw-semibold">Belum ada data lab</h5>
+                                                <p class="text-muted mb-0">Data lab akan muncul di sini</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
-                    @endif
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,6 +340,24 @@
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
     <script src="{{ asset('assets/js/sidebarmenu.js') }}"></script>
     <script src="{{ asset('assets/js/iconify-icon.min.js') }}"></script>
+
+    {{-- Auto switch tab berdasarkan query string --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kalau ada ?search=... → aktifin tab Cari
+            // Kalau ada ?tab=ruang → aktifin tab Ruang
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+
+            if (tab === 'ruang') {
+                const ruangTab = document.getElementById('tab-ruang-btn');
+                if (ruangTab) {
+                    const bsTab = new bootstrap.Tab(ruangTab);
+                    bsTab.show();
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
