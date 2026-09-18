@@ -34,7 +34,7 @@ class HomeController extends Controller
         $inventaris = Inventaris::with(['lab', 'sumberDana'])
             ->where('lab_id', $id)
             ->orderBy('nama_barang')
-            ->get();
+            ->paginate(15);
 
         $grandTotal = $inventaris->sum(fn ($i) => $i->volume * $i->harga_satuan);
 

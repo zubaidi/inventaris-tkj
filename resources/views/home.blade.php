@@ -164,27 +164,16 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-
                     <div class="tab-content" id="homeTabsContent">
-
-                        {{-- ============================================
-                         | TAB 1: CARI ITEM
-                         ============================================ --}}
                         <div class="tab-pane fade show active" id="tab-cari" role="tabpanel"
                             aria-labelledby="tab-cari-btn">
-
-                            {{-- Search Box --}}
-                            <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-body p-4">
-                                    <h5 class="fw-bold mb-2">Cari Barang</h5>
-                                    <p class="text-muted small mb-3">
-                                        Ketik nama barang, kode inventaris, atau spesifikasi
-                                    </p>
+                            <div class="card border-0 shadow-sm mb-3">
+                                <div class="card-body p-3">
                                     <form action="{{ route('home') }}" method="GET" class="d-flex gap-2">
-                                        <input type="text" name="search" class="form-control form-control-lg"
-                                            placeholder="Contoh: AC, Router, SMKSA/TKJ7..." value="{{ $search ?? '' }}"
-                                            autofocus>
-                                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Cari barang, nomor inventaris, atau spesifikasi..."
+                                            value="{{ $search ?? '' }}" autofocus>
+                                        <button type="submit" class="btn btn-primary px-3">
                                             <i class="ti ti-search"></i> Cari
                                         </button>
                                     </form>
@@ -263,16 +252,10 @@
                                 </div>
                             @endif
                         </div>
-
-                        {{-- ============================================
-                         | TAB 2: LIHAT PER RUANG
-                         ============================================ --}}
                         <div class="tab-pane fade" id="tab-ruang" role="tabpanel" aria-labelledby="tab-ruang-btn">
-
                             <div class="mb-3 text-muted small">
                                 Pilih lab/ruang untuk melihat daftar barang di dalamnya
                             </div>
-
                             <div class="row g-3">
                                 @forelse ($labs as $lab)
                                     <div class="col-md-6 col-lg-4">
@@ -281,11 +264,11 @@
                                             <div class="card border-0 shadow-sm h-100 lab-card">
                                                 <div class="card-body">
                                                     <div class="d-flex align-items-center gap-3 mb-3">
-                                                        <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                        <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center shrink-0"
                                                             style="width: 48px; height: 48px;">
                                                             <i class="ti ti-building fs-5 text-primary"></i>
                                                         </div>
-                                                        <div class="flex-grow-1">
+                                                        <div class="grow">
                                                             <h6 class="fw-bold mb-0 text-dark">
                                                                 {{ $lab->nama_lab }}
                                                             </h6>

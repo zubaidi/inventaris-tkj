@@ -1,6 +1,8 @@
 @extends('admin.layouts.app-layout')
 @section('title', 'Rekap Per Ruang')
-
+@push('style')
+    <link rel="stylesheet" href="{{ asset('assets/css/datatables.min.css') }}">
+@endpush
 @section('content')
     <div class="container-fluid">
         {{-- Header --}}
@@ -61,7 +63,7 @@
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                         {{-- Kiri: Icon + Info Lab --}}
                         <div class="d-flex align-items-center gap-3">
-                            <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
+                            <div class="rounded-circle bg-primary-subtle d-flex align-items-center justify-content-center shrink-0"
                                 style="width: 56px; height: 56px;">
                                 <i class="ti ti-building fs-5 text-primary"></i>
                             </div>
@@ -105,7 +107,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($inventaris as $i => $item)
+                            @foreach ($inventaris as $i => $item)
                                 <tr>
                                     <td class="text-center">{{ $i + 1 }}</td>
                                     <td>{{ $item->no_inventaris }}</td>
@@ -132,19 +134,7 @@
                                     </td>
                                     <td>{{ $item->sumberDana->nama ?? '-' }}</td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="9" class="text-center py-5">
-                                        @if ($labTerpilih)
-                                            <i class="ti ti-box-off fs-1 text-muted d-block mb-2"></i>
-                                            <div class="text-muted">Tidak ada barang di {{ $labTerpilih->nama_lab }}.</div>
-                                        @else
-                                            <i class="ti ti-filter fs-1 text-muted d-block mb-2"></i>
-                                            <div class="text-muted">Pilih lab/ruang dulu untuk menampilkan data.</div>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                         @if ($inventaris->count() > 0)
                             <tfoot class="table-light">
@@ -163,3 +153,35 @@
         </div>
     </div>
 @endsection
+@push('script')
+    <script src="{{ asset('assets/js/datatables.min.js') }}"></script>
+    <script>
+        new DataTable('#tabel-rekap-ruang', {
+            language: {
+                url: "{{ asset('assets/js/id.json') }}",
+            },
+            order: [
+                [2, 'asc']
+            ],
+            pageLength: 25,
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, 'Semua']
+            ],
+            columnDefs: [{
+                targets: 0,
+                orderable: false,
+                searchable: false,
+            }],
+            drawCallback: function() {
+                const api = this.api();
+                const info = api.page.info(); // ← pakai page.info(), bukan context[0]
+                api.column(0, {
+                    page: 'current'
+                }).nodes().each(function(cell, i) {
+                    cell.innerHTML = info.start + i + 1;
+                });
+            }
+        });
+    </script>
+@endpush

@@ -12,29 +12,59 @@
     <link rel="stylesheet" href="{{ asset('assets/tabler-icons/tabler-icons.css') }}">
 
     <style>
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
 
         @media (max-width: 767.98px) {
-            .table-wrapper { overflow-x: visible; }
-            #tabel-detail thead { display: none; }
-            #tabel-detail, #tabel-detail tbody, #tabel-detail tr, #tabel-detail td {
-                display: block; width: 100%;
+            .table-wrapper {
+                overflow-x: visible;
             }
+
+            #tabel-detail thead {
+                display: none;
+            }
+
+            #tabel-detail,
+            #tabel-detail tbody,
+            #tabel-detail tr,
+            #tabel-detail td {
+                display: block;
+                width: 100%;
+            }
+
             #tabel-detail tr {
-                background: #fff; margin-bottom: 1rem; border-radius: 12px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1rem;
+                background: #fff;
+                margin-bottom: 1rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                padding: 1rem;
                 border: 1px solid #f1f5f9;
             }
+
             #tabel-detail td {
-                padding: 8px 0; border-bottom: 1px dashed #f1f5f9;
-                display: flex; justify-content: space-between;
-                align-items: center; gap: 12px; text-align: right;
+                padding: 8px 0;
+                border-bottom: 1px dashed #f1f5f9;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                text-align: right;
             }
-            #tabel-detail td:last-child { border-bottom: none; }
+
+            #tabel-detail td:last-child {
+                border-bottom: none;
+            }
+
             #tabel-detail td::before {
-                content: attr(data-label); font-weight: 600;
-                color: #64748b; font-size: 0.8rem;
-                text-transform: uppercase; text-align: left; flex-shrink: 0;
+                content: attr(data-label);
+                font-weight: 600;
+                color: #64748b;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                text-align: left;
+                flex-shrink: 0;
             }
         }
     </style>
@@ -140,7 +170,8 @@
                                             Rp {{ number_format((float) $item->harga_satuan, 0, ',', '.') }}
                                         </td>
                                         <td class="text-end fw-semibold" data-label="Jumlah">
-                                            Rp {{ number_format((float) ($item->volume * $item->harga_satuan), 0, ',', '.') }}
+                                            Rp
+                                            {{ number_format((float) ($item->volume * $item->harga_satuan), 0, ',', '.') }}
                                         </td>
                                     </tr>
                                 @empty
@@ -153,6 +184,24 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top py-3">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <small class="text-muted">
+                            Menampilkan
+                            <strong>{{ $inventaris->firstItem() ?? 0 }}</strong>
+                            –
+                            <strong>{{ $inventaris->lastItem() ?? 0 }}</strong>
+                            dari
+                            <strong>{{ $inventaris->total() }}</strong> barang
+                        </small>
+                        <div>
+                            {{-- Pagination cuma muncul kalau > 1 halaman --}}
+                            @if ($inventaris->hasPages())
+                                {{ $inventaris->links() }}
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
