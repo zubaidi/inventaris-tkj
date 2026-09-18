@@ -48,7 +48,9 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td class="text-center">
-                                            @if ($user->role === 'admin')
+                                            @if ($user->role === 'super_admin')
+                                                <span class="badge bg-danger-subtle text-danger">Super Admin</span>
+                                            @elseif ($user->role === 'admin')
                                                 <span class="badge bg-primary-subtle text-primary">Admin</span>
                                             @else
                                                 <span class="badge bg-secondary-subtle text-secondary">User</span>

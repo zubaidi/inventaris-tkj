@@ -17,6 +17,7 @@
             <ul id="sidebarnav">
                 @php
                     $isAdmin = auth()->user()->isAdmin();
+                    $isSuperAdmin = auth()->check() && auth()->user()->isSuperAdmin();
                 @endphp
 
                 @if ($isAdmin)
@@ -92,7 +93,7 @@
                         <span class="hide-menu">Rekap Per Ruang</span>
                     </a>
                 </li>
-                @if ($isAdmin)
+                @if ($isSuperAdmin)
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span class="hide-menu">Pengaturan</span>
@@ -142,7 +143,11 @@
                 <div class="john-title">
                     <h6 class="mb-0 fs-4 fw-semibold">{{ auth()->user()->name }}</h6>
                     <span class="fs-2">
-                        {{ auth()->user()->isAdmin() ? 'Administrator' : 'User' }}
+                        @if (auth()->user()->isSuperAdmin())
+                            Super Admin
+                        @else
+                            Admin {{ auth()->user()->jurusan->singkatan ?? '-' }}
+                        @endif
                     </span>
                 </div>
                 <form action="{{ route('logout') }}" method="post">

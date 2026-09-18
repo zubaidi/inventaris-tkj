@@ -98,6 +98,26 @@
             <div class="modal-content">
                 <form action="{{ route('admin.sumber-dana.store') }}" method="POST">
                     @csrf
+                    @if (auth()->user()->isSuperAdmin())
+                        <div class="col-md-6">
+                            <label for="jurusan_id" class="form-label">
+                                Jurusan <span class="text-danger">*</span>
+                            </label>
+                            <select name="jurusan_id" id="jurusan_id"
+                                class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                <option value="">— Pilih Jurusan —</option>
+                                @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                    <option value="{{ $j->id }}"
+                                        {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                        {{ $j->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('jurusan_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTambahSumberDanaLabel">
                             <i class="ti ti-plus me-1"></i> Tambah Sumber Dana
@@ -132,6 +152,26 @@
                 <form id="formEditSumberDana" action="" method="POST">
                     @csrf
                     @method('PUT')
+                    @if (auth()->user()->isSuperAdmin())
+                        <div class="col-md-6">
+                            <label for="jurusan_id" class="form-label">
+                                Jurusan <span class="text-danger">*</span>
+                            </label>
+                            <select name="jurusan_id" id="jurusan_id"
+                                class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                <option value="">— Pilih Jurusan —</option>
+                                @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                    <option value="{{ $j->id }}"
+                                        {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                        {{ $j->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('jurusan_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalEditSumberDanaLabel">
                             <i class="ti ti-pencil me-1"></i> Edit Sumber Dana

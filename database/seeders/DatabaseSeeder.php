@@ -16,9 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
+            JurusanSeeder::class,
             UserSeeder::class,
-            SumberDanaSeeder::class,
-            LabSeeder::class,
+            // SumberDanaSeeder::class,
+            // LabSeeder::class,
         ]);
     }
 }

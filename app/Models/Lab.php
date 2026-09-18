@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToJurusan;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Lab extends Model
 {
+    use HasFactory, BelongsToJurusan;
     protected $table = 'labs';
     protected $fillable = [
+        'jurusan_id',
         'nama_lab',
         'lokasi',
         'keterangan',

@@ -57,6 +57,7 @@
                             <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
                             <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
                                 <option value="">-- Pilih Role --</option>
+                                <option value="super_admin" {{ old('role', $user->role) == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                                 <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>User</option>
                             </select>

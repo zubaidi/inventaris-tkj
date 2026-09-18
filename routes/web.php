@@ -62,11 +62,25 @@ Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+        // ADMIN & USER
+        Route::get('inventaris/cetak', [InventarisController::class, 'cetakInventaris'])->name('inventaris.cetak');
+        Route::get('inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
+        Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
+        Route::get('inventaris/rekap-per-ruang', [InventarisController::class, 'rekapPerRuang'])->name('inventaris.rekap-per-ruang');
+        Route::resource('inventaris', InventarisController::class);
+
+        // ADMIN ONLY
         Route::middleware('admin')->group(function () {
             Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::resource('labs', LabController::class);
             Route::resource('sumber-dana', SumberDanaController::class);
+        });
+
+        // SUPER ADMIN ONLY
+        Route::middleware('super_admin')->group(function () {
             Route::resource('user', UserController::class);
+
             Route::prefix('backup')->name('backup.')->group(function () {
                 Route::get('/database', [BackupController::class, 'indexDatabase'])->name('database');
                 Route::get('/database/download', [BackupController::class, 'backupDatabase'])->name('database.download');
@@ -74,10 +88,4 @@ Route::middleware(['auth'])
                 Route::get('/csv/download/{table}', [BackupController::class, 'exportCsv'])->name('csv.download');
             });
         });
-        // admin dan hanya user
-        Route::get('inventaris/cetak', [InventarisController::class, 'cetakInventaris'])->name('inventaris.cetak');
-        Route::get('inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
-        Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
-        Route::get('inventaris/rekap-per-ruang', [InventarisController::class, 'rekapPerRuang'])->name('inventaris.rekap-per-ruang');
-        Route::resource('inventaris', InventarisController::class);
     });

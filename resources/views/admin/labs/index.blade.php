@@ -106,6 +106,7 @@
             <div class="modal-content">
                 <form action="{{ route('admin.labs.store') }}" method="POST">
                     @csrf
+
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTambahLabLabel">
                             <i class="ti ti-plus me-1"></i> Tambah Lab Baru
@@ -114,6 +115,26 @@
                     </div>
 
                     <div class="modal-body">
+                        @if (auth()->user()->isSuperAdmin())
+                            <div class="col-md-6">
+                                <label for="jurusan_id" class="form-label">
+                                    Jurusan <span class="text-danger">*</span>
+                                </label>
+                                <select name="jurusan_id" id="jurusan_id"
+                                    class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                    <option value="">— Pilih Jurusan —</option>
+                                    @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                        <option value="{{ $j->id }}"
+                                            {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                            {{ $j->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         {{-- Nama Lab --}}
                         <div class="mb-3">
                             <label for="nama_lab" class="form-label">
@@ -161,7 +182,6 @@
         </div>
     </div>
     {{-- end modal tambah lab --}}
-    {{-- modal edit lab --}}
     {{-- Modal Edit Lab --}}
     <div class="modal fade" id="modalEditLab" tabindex="-1" aria-labelledby="modalEditLabLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -169,7 +189,6 @@
                 <form id="formEditLab" action="" method="POST">
                     @csrf
                     @method('PUT')
-
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalEditLabLabel">
                             <i class="ti ti-pencil me-1"></i> Edit Lab
@@ -178,6 +197,27 @@
                     </div>
 
                     <div class="modal-body">
+                        {{-- Superadmin --}}
+                        @if (auth()->user()->isSuperAdmin())
+                            <div class="col-md-6">
+                                <label for="jurusan_id" class="form-label">
+                                    Jurusan <span class="text-danger">*</span>
+                                </label>
+                                <select name="jurusan_id" id="jurusan_id"
+                                    class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                    <option value="">— Pilih Jurusan —</option>
+                                    @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                        <option value="{{ $j->id }}"
+                                            {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                            {{ $j->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         {{-- Nama Lab --}}
                         <div class="mb-3">
                             <label for="edit_nama_lab" class="form-label">

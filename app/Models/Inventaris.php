@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToJurusan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventaris extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, BelongsToJurusan;
     protected $table = 'inventaris';
 
     protected $fillable = [
+        'jurusan_id',
         'tanggal',
         'no_inventaris',
         'nama_barang',
@@ -68,7 +70,7 @@ class Inventaris extends Model
     {
         return $this->belongsTo(SumberDana::class);
     }
-    
+
     public function scopeKondisi($query, $kondisi)
     {
         return $query->where('kondisi', $kondisi);

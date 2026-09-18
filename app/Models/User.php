@@ -3,13 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -47,8 +48,40 @@ class User extends Authenticatable
         ];
     }
 
+    // public function isAdmin(): bool
+    // {
+    //     return $this->role === 'admin';
+    // }
+
+    /**
+     * Relasi ke tabel jurusan.
+     */
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
+
+    /**
+     * Cek apakah user ini super admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    /**
+     * Cek apakah user ini admin (super_admin atau admin biasa).
+     */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, ['super_admin', 'admin']);
+    }
+
+    /**
+     * Cek apakah user ini user biasa.
+     */
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
     }
 }

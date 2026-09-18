@@ -124,9 +124,8 @@ class InventarisController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'tanggal' => 'required|date',
-            'no_inventaris' => 'required|string|unique:inventaris,no_inventaris',
             'nama_barang' => 'required|string|max:255',
             'spesifikasi' => 'nullable|string|max:255',
             'volume' => 'required|integer|min:1',
@@ -137,7 +136,19 @@ class InventarisController extends Controller
             'keterangan' => 'nullable|string',
             'lab_id' => 'required|exists:labs,id',
             'sumber_dana_id' => 'required|exists:sumber_danas,id',
-        ]);
+        ];
+
+        // Super admin wajib pilih jurusan
+        if (auth()->user()->isSuperAdmin()) {
+            $rules['jurusan_id'] = 'required|exists:jurusans,id';
+        }
+
+        // Unique no_inventaris per jurusan
+        // Ambil jurusan_id dari request (super admin) atau dari user
+        $jurusanId = $request->input('jurusan_id') ?? auth()->user()->jurusan_id;
+        $rules['no_inventaris'] = 'required|string|unique:inventaris,no_inventaris,NULL,id,jurusan_id,'.$jurusanId;
+
+        $validated = $request->validate($rules);
 
         Inventaris::create($validated);
 
@@ -165,9 +176,8 @@ class InventarisController extends Controller
     {
         $barang = Inventaris::findOrFail($id);
 
-        $validated = $request->validate([
+        $rules = [
             'tanggal' => 'sometimes|required|date',
-            'no_inventaris' => 'sometimes|required|string|unique:inventaris,no_inventaris,'.$id,
             'nama_barang' => 'sometimes|required|string|max:255',
             'spesifikasi' => 'nullable|string|max:255',
             'volume' => 'sometimes|required|integer|min:1',
@@ -178,7 +188,18 @@ class InventarisController extends Controller
             'keterangan' => 'nullable|string',
             'lab_id' => 'sometimes|required|exists:labs,id',
             'sumber_dana_id' => 'sometimes|required|exists:sumber_danas,id',
-        ]);
+        ];
+
+        // 👇 Super admin bisa pindahin jurusan
+        if (auth()->user()->isSuperAdmin()) {
+            $rules['jurusan_id'] = 'sometimes|required|exists:jurusans,id';
+        }
+
+        // 👇 Unique no_inventaris per jurusan, exclude ID sendiri
+        $jurusanId = $request->input('jurusan_id') ?? $barang->jurusan_id;
+        $rules['no_inventaris'] = 'sometimes|required|string|unique:inventaris,no_inventaris,'.$id.',id,jurusan_id,'.$jurusanId;
+
+        $validated = $request->validate($rules);
 
         $barang->update($validated);
 

@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToJurusan;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SumberDana extends Model
 {
+    use HasFactory, BelongsToJurusan;
     protected $table = 'sumber_danas';
      protected $fillable = [
+        'jurusan_id',
         'nama',
     ];
     public function inventaris()
