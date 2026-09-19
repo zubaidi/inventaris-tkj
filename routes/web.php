@@ -8,6 +8,7 @@ use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\LabController;
 use App\Http\Controllers\SumberDanaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\JurusanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -79,6 +80,7 @@ Route::middleware(['auth'])
 
         // SUPER ADMIN ONLY
         Route::middleware('super_admin')->group(function () {
+            Route::resource('jurusan', JurusanController::class);
             Route::resource('user', UserController::class);
 
             Route::prefix('backup')->name('backup.')->group(function () {

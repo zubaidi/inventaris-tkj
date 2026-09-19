@@ -27,7 +27,7 @@
                 <div class="card-header">
                     <div class="d-flex align-items-start justify-content-between">
                         <div>
-                            <h3 class="fw-semibold mb-1">Data Ruang dan Lab TKJ</h3>
+                            <h3 class="fw-semibold mb-1">Data Ruang dan Lab {{ auth()->user()->jurusan?->singkatan ?? ' SMKSA' }}</h3>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0 small">
                                     <li class="breadcrumb-item">
@@ -116,7 +116,7 @@
 
                     <div class="modal-body">
                         @if (auth()->user()->isSuperAdmin())
-                            <div class="col-md-6">
+                            <div class="mb-3">
                                 <label for="jurusan_id" class="form-label">
                                     Jurusan <span class="text-danger">*</span>
                                 </label>

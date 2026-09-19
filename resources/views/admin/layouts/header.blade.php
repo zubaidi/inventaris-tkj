@@ -13,12 +13,12 @@
             </ul>
 
             <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
-                Sistem Inventaris TKJ SMK Syafi'i Akrom
+                Sistem Inventaris {{ auth()->user()->jurusan?->singkatan ?? 'Jurusan ' }} SMK Syafi'i Akrom
             </ul>
 
             <div class="d-block d-lg-none py-4">
                 <a href="{{ route('admin.dashboard') }}" class="text-nowrap logo-img">
-                    <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark" width="120" height="45"/>
+                    <img src="{{ asset('assets/image/sa.png') }}" class="dark-logo" alt="Logo-Dark" width="45" height="45"/>
                     {{-- <img src="{{ asset('assets/image/tkj1.png') }}" class="light-logo" alt="Logo-light" width="120" height="45"/> --}}
                 </a>
             </div>
@@ -52,9 +52,9 @@
                                         <img src="{{ asset('assets/image/' . (auth()->user()->isAdmin() ? 'user-1.jpg' : 'user-7.jpg')) }}"
                                             class="rounded-circle" width="80" height="80" alt="modernize-img" />
                                         <div class="ms-3">
-                                            <h5 class="mb-1 fs-3">{{ auth()->user()->name }}</h5>
+                                            <h5 class="mb-1 fs-3">{{ auth()->user()->jurusan?->kepala_jurusan ?? 'Superadmin ' }}</h5>
                                             <span class="mb-1 d-block">
-                                                {{ auth()->user()->isAdmin() ? 'Administrator' : 'User' }}
+                                                {{ auth()->user()->isAdmin() ? 'Admin Pusat' : 'User' }}
                                             </span>
                                             <p class="mb-0 d-flex align-items-center gap-2">
                                                 <i class="ti ti-mail fs-4"></i> {{ auth()->user()->email }}

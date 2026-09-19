@@ -13,8 +13,8 @@ class SumberDanaController extends Controller
     public function publicIndex()
     {
         $sumberDanas = SumberDana::withCount('inventaris')
-        ->orderBy('nama')
-        ->paginate(10);
+            ->orderBy('nama')
+            ->paginate(10);
 
         return view('admin.sumberdana.index', compact('sumberDanas'));
     }
@@ -49,9 +49,20 @@ class SumberDanaController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255|unique:sumber_danas,nama',
-        ]);
+        $rules = [
+            'nama' => 'required|string|max:255',
+        ];
+
+        // 👇 Super admin wajib pilih jurusan
+        if (auth()->user()->isSuperAdmin()) {
+            $rules['jurusan_id'] = 'required|exists:jurusans,id';
+        }
+
+        // Unique nama per jurusan
+        $jurusanId = $request->input('jurusan_id') ?? auth()->user()->jurusan_id;
+        $rules['nama'] = 'required|string|max:255|unique:sumber_danas,nama,NULL,id,jurusan_id,'.$jurusanId;
+
+        $validated = $request->validate($rules);
 
         SumberDana::create($validated);
 
@@ -77,9 +88,18 @@ class SumberDanaController extends Controller
     {
         $sumberDana = SumberDana::findOrFail($id);
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255|unique:sumber_danas,nama,' . $id,
-        ]);
+        $rules = [
+            'nama' => 'required|string|max:255',
+        ];
+
+        if (auth()->user()->isSuperAdmin()) {
+            $rules['jurusan_id'] = 'required|exists:jurusans,id';
+        }
+
+        $jurusanId = $request->input('jurusan_id') ?? $sumberDana->jurusan_id;
+        $rules['nama'] = 'required|string|max:255|unique:sumber_danas,nama,'.$id.',id,jurusan_id,'.$jurusanId;
+
+        $validated = $request->validate($rules);
 
         $sumberDana->update($validated);
 

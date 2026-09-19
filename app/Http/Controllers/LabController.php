@@ -18,7 +18,7 @@ class LabController extends Controller
             ->orderBy('nama_lab')
             ->get();
 
-        return view('lab.index', compact('labs'));
+        return view('admin.labs.index', compact('labs'));
     }
 
     /**

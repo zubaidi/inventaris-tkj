@@ -39,6 +39,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-nowrap">#</th>
+                                    {{-- <th>Jurusan</th> --}}
                                     <th>Nama Sumber Dana</th>
                                     <th class="text-nowrap">Jml Barang</th>
                                     <th class="text-nowrap">Total Nilai</th>
@@ -46,9 +47,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($sumberDanas as $sumberDana)
+                                @foreach ($sumberDanas as $sumberDana)
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
+                                        {{-- <td>{{ $sumberDana->jurusan->singkatan }}</td> --}}
                                         <td>{{ $sumberDana->nama }}</td>
                                         <td class="text-center">
                                             <span class="badge bg-primary-subtle text-primary">
@@ -78,12 +80,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">Belum ada data sumber dana.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -98,26 +95,6 @@
             <div class="modal-content">
                 <form action="{{ route('admin.sumber-dana.store') }}" method="POST">
                     @csrf
-                    @if (auth()->user()->isSuperAdmin())
-                        <div class="col-md-6">
-                            <label for="jurusan_id" class="form-label">
-                                Jurusan <span class="text-danger">*</span>
-                            </label>
-                            <select name="jurusan_id" id="jurusan_id"
-                                class="form-select @error('jurusan_id') is-invalid @enderror" required>
-                                <option value="">— Pilih Jurusan —</option>
-                                @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
-                                    <option value="{{ $j->id }}"
-                                        {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
-                                        {{ $j->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('jurusan_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    @endif
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTambahSumberDanaLabel">
                             <i class="ti ti-plus me-1"></i> Tambah Sumber Dana
@@ -125,6 +102,26 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        @if (auth()->user()->isSuperAdmin())
+                            <div class="mb-3">
+                                <label for="jurusan_id" class="form-label">
+                                    Jurusan <span class="text-danger">*</span>
+                                </label>
+                                <select name="jurusan_id" id="jurusan_id"
+                                    class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                    <option value="">— Pilih Jurusan —</option>
+                                    @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                        <option value="{{ $j->id }}"
+                                            {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                            {{ $j->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <label for="nama" class="form-label">Nama Sumber Dana <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama"
                             name="nama" value="{{ old('nama') }}" placeholder="Contoh: BOS" required>
@@ -152,26 +149,6 @@
                 <form id="formEditSumberDana" action="" method="POST">
                     @csrf
                     @method('PUT')
-                    @if (auth()->user()->isSuperAdmin())
-                        <div class="col-md-6">
-                            <label for="jurusan_id" class="form-label">
-                                Jurusan <span class="text-danger">*</span>
-                            </label>
-                            <select name="jurusan_id" id="jurusan_id"
-                                class="form-select @error('jurusan_id') is-invalid @enderror" required>
-                                <option value="">— Pilih Jurusan —</option>
-                                @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
-                                    <option value="{{ $j->id }}"
-                                        {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
-                                        {{ $j->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('jurusan_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    @endif
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalEditSumberDanaLabel">
                             <i class="ti ti-pencil me-1"></i> Edit Sumber Dana
@@ -179,6 +156,26 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        @if (auth()->user()->isSuperAdmin())
+                            <div class="mb-3">
+                                <label for="jurusan_id" class="form-label">
+                                    Jurusan <span class="text-danger">*</span>
+                                </label>
+                                <select name="jurusan_id" id="jurusan_id"
+                                    class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                    <option value="">— Pilih Jurusan —</option>
+                                    @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                        <option value="{{ $j->id }}"
+                                            {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                            {{ $j->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <label for="edit_nama" class="form-label">Nama Sumber Dana <span
                                 class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="edit_nama" name="nama" required>
@@ -214,7 +211,7 @@
                     searchable: false
                 },
                 {
-                    targets: [0, 2],
+                    targets: [0, 3],
                     className: 'text-center'
                 },
             ],

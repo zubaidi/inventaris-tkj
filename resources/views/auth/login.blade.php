@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Favicon icon-->
-    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/logo.png') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/sa.png') }}" />
 
     <!-- Core Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
@@ -32,9 +32,9 @@
                             <div class="card-body">
                                 <a href="../main/index.html"
                                     class="text-nowrap logo-img text-center d-block mb-5 w-100">
-                                    <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark"
-                                        width="115" height="40" />
-                                    <img src="{{ asset('assets/image/tkj1.png') }}" class="light-logo"
+                                    <img src="{{ asset('assets/image/sa.png') }}" class="dark-logo" alt="Logo-Dark"
+                                        width="64" height="64" />
+                                    <img src="{{ asset('assets/image/sa.png') }}" class="light-logo"
                                         alt="Logo-light" />
                                 </a>
 
@@ -85,7 +85,7 @@
                                 <div class="text-center text-white">
                                     <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                                         <span class="fw-semibold" style="font-size: 0.8rem;">
-                                            Inventaris TKJ
+                                            Inventaris Jurusan
                                         </span>
                                         <span class="text-white-50" style="font-size: 0.75rem;">•</span>
                                         <span class="text-white-50" style="font-size: 0.7rem;">

@@ -4,14 +4,26 @@
         <!-- Start Vertical Layout Sidebar -->
         <!-- ---------------------------------- -->
         <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="{{ route('admin.dashboard') }}" class="text-nowrap logo-img">
-                <img src="{{ asset('assets/image/tkj2.png') }}" class="dark-logo" alt="Logo-Dark" width="105px"
+            <!-- Menggunakan d-flex agar gambar dan teks berdampingan, gap-2 untuk jaraknya -->
+            <a href="{{ route('admin.dashboard') }}"
+                class="text-nowrap logo-img d-flex align-items-center gap-2 text-decoration-none">
+
+                <!-- Logonya di sebelah kiri -->
+                <img src="{{ asset('assets/image/sa.png') }}" class="dark-logo" alt="Logo-Dark" width="32px"
                     height="32px" />
+
+                <!-- Teks di sebelah kanan dengan flex column agar otomatis turun ke bawah (2 baris) -->
+                <div class="d-flex flex-column lh-sm">
+                    <span class="text-dark fw-semibold" style="font-size: 14px;">Sistem Inventaris</span>
+                    <span class="text-dark fw-semibold" style="font-size: 14px;">Jurusan SMKSA</span>
+                </div>
+
             </a>
             <a href="javascript:void(0)" class="sidebartoggler ms-auto text-decoration-none fs-5 d-block d-xl-none">
                 <i class="ti ti-x"></i>
             </a>
         </div>
+
 
         <nav class="sidebar-nav scroll-sidebar" data-simplebar>
             <ul id="sidebarnav">
@@ -99,6 +111,15 @@
                         <span class="hide-menu">Pengaturan</span>
                     </li>
                     <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->routeIs('admin.jurusan.*') ? 'active' : '' }}"
+                            href="{{ route('admin.jurusan.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-git-fork"></i>
+                            </span>
+                            <span class="hide-menu">Jurusan</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}"
                             href="{{ route('admin.user.index') }}" aria-expanded="false">
                             <span>
@@ -144,9 +165,9 @@
                     <h6 class="mb-0 fs-4 fw-semibold">{{ auth()->user()->name }}</h6>
                     <span class="fs-2">
                         @if (auth()->user()->isSuperAdmin())
-                            Super Admin
+                            AdminPusat
                         @else
-                            Admin {{ auth()->user()->jurusan->singkatan ?? '-' }}
+                            Admin
                         @endif
                     </span>
                 </div>

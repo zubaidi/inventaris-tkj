@@ -8,12 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Favicon icon-->
-    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/logo.png') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/image/sa.png') }}" />
 
     <!-- Core Css -->
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
 
-    <title>@yield('title', 'Sistem Inventaris TKJ')</title>
+    <title>@yield('title', 'Sistem Inventaris Jurusan')</title>
     <!-- Owl Carousel  -->
     <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/tabler-icons/tabler-icons.css') }}">

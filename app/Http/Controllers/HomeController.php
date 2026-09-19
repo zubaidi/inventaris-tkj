@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventaris;
+use App\Models\Jurusan;
 use App\Models\Lab;
 use Illuminate\Http\Request;
 
@@ -20,11 +21,14 @@ class HomeController extends Controller
         $inventaris = $query->latest()->paginate(15)->withQueryString();
 
         // Data buat Tab 2 — Rekap per Lab
-        $labs = Lab::withCount('inventaris')
-            ->orderBy('nama_lab')
+        $jurusans = Jurusan::with(['labs' => function ($q) {
+            $q->withCount('inventaris')->orderBy('nama_lab');
+        }])
+            ->withCount('inventaris')
+            ->orderBy('nama')
             ->get();
 
-        return view('home', compact('inventaris', 'labs', 'search'));
+        return view('home', compact('inventaris', 'jurusans', 'search'));
     }
 
     public function perRuang($id)
