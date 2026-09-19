@@ -295,16 +295,16 @@
                             <ul class="nav nav-tabs nav-tabs-modern justify-content-center" id="homeTabs"
                                 role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="tab-ruang-btn" data-bs-toggle="tab"
-                                        data-bs-target="#tab-ruang" type="button" role="tab"
-                                        aria-controls="tab-ruang" aria-selected="true">
+                                    <button class="nav-link {{ $search ? '' : 'active' }}" id="tab-ruang-btn"
+                                        data-bs-toggle="tab" data-bs-target="#tab-ruang" type="button" role="tab"
+                                        aria-controls="tab-ruang" aria-selected="{{ $search ? 'false' : 'true' }}">
                                         <i class="ti ti-building me-1"></i> Lihat Per Ruang
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="tab-cari-btn" data-bs-toggle="tab"
-                                        data-bs-target="#tab-cari" type="button" role="tab"
-                                        aria-controls="tab-cari" aria-selected="true">
+                                    <button class="nav-link {{ $search ? 'active' : '' }}" id="tab-cari-btn"
+                                        data-bs-toggle="tab" data-bs-target="#tab-cari" type="button" role="tab"
+                                        aria-controls="tab-cari" aria-selected="{{ $search ? 'true' : 'false' }}">
                                         <i class="ti ti-search me-1"></i> Cari Item
                                     </button>
                                 </li>
@@ -320,8 +320,13 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-10">
                             <div class="tab-content" id="homeTabsContent">
-                                <div class="tab-pane fade show" id="tab-cari" role="tabpanel"
-                                    aria-labelledby="tab-cari-btn">
+
+                                {{-- ============================================
+                         TAB 1: CARI ITEM
+                         ============================================ --}}
+                                <div class="tab-pane fade {{ $search ? 'show active' : '' }}" id="tab-cari"
+                                    role="tabpanel" aria-labelledby="tab-cari-btn">
+
                                     <div class="card border-0 shadow-sm mb-3">
                                         <div class="card-body p-3">
                                             <form action="{{ route('home') }}" method="GET" class="d-flex gap-2">
@@ -360,7 +365,6 @@
                                                             <tbody>
                                                                 @foreach ($inventaris as $i => $item)
                                                                     <tr>
-                                                                        {{-- Nomor urut global --}}
                                                                         <td class="text-center" data-label="No">
                                                                             {{ $inventaris->firstItem() + $i }}
                                                                         </td>
@@ -417,8 +421,7 @@
                                                     <i class="ti ti-search-off fs-1 text-muted mb-3"></i>
                                                     <h5 class="fw-semibold">Barang tidak ditemukan</h5>
                                                     <p class="text-muted mb-0">Coba kata kunci lain, misal: AC,
-                                                        Printer, Router
-                                                    </p>
+                                                        Printer, Router</p>
                                                 </div>
                                             </div>
                                         @endif
@@ -432,8 +435,12 @@
                                         </div>
                                     @endif
                                 </div>
-                                <div class="tab-pane fade show active" id="tab-ruang" role="tabpanel"
-                                    aria-labelledby="tab-ruang-btn">
+
+                                {{-- ============================================
+                         TAB 2: LIHAT PER RUANG
+                         ============================================ --}}
+                                <div class="tab-pane fade {{ $search ? '' : 'show active' }}" id="tab-ruang"
+                                    role="tabpanel" aria-labelledby="tab-ruang-btn">
 
                                     <div class="mb-3 text-muted small">
                                         Pilih lab/ruang untuk melihat daftar barang di dalamnya
@@ -442,28 +449,27 @@
                                     @if ($jurusans->count())
                                         <div class="accordion accordion-modern" id="accordionJurusan">
 
-                                            @foreach ($jurusans as $i => $jurusan)
+                                            @foreach ($jurusans as $jurusan)
                                                 @php $collapseId = 'collapseJurusan' . $jurusan->id; @endphp
 
                                                 <div
                                                     class="accordion-item border-0 shadow-sm mb-2 rounded overflow-hidden">
                                                     {{-- Header Accordion --}}
                                                     <h2 class="accordion-header" id="heading{{ $jurusan->id }}">
-                                                        <button
-                                                            class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}"
-                                                            type="button" data-bs-toggle="collapse"
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
                                                             data-bs-target="#{{ $collapseId }}"
                                                             aria-expanded="false"
                                                             aria-controls="{{ $collapseId }}">
                                                             <div class="d-flex align-items-center gap-3 w-100 me-2">
                                                                 {{-- Icon Jurusan --}}
-                                                                <div class="rounded-3 bg-primary-subtle d-flex align-items-center justify-content-center shrink-0"
+                                                                <div class="rounded-3 bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
                                                                     style="width: 40px; height: 40px;">
                                                                     <i class="ti ti-school text-primary"></i>
                                                                 </div>
 
                                                                 {{-- Info Jurusan --}}
-                                                                <div class="grow">
+                                                                <div class="flex-grow-1">
                                                                     <div class="fw-semibold text-dark">
                                                                         {{ $jurusan->nama }}
                                                                     </div>
@@ -479,8 +485,7 @@
                                                     </h2>
 
                                                     {{-- Body Accordion --}}
-                                                    <div id="{{ $collapseId }}"
-                                                        class="accordion-collapse collapse }}"
+                                                    <div id="{{ $collapseId }}" class="accordion-collapse collapse"
                                                         aria-labelledby="heading{{ $jurusan->id }}"
                                                         data-bs-parent="#accordionJurusan">
 
@@ -574,10 +579,16 @@
                     </p>
                 </div>
 
-                {{-- Kanan: Info tambahan (opsional) --}}
-                <p class="footer-text mb-0">
-                    Sistem Inventaris Jurusan SMK Syafi'i Akrom
-                </p>
+                {{-- Kanan: Info tambahan --}}
+                <div class="text-md-end text-center">
+                    <p class="footer-text mb-1">
+                        Sistem Inventaris Jurusan SMK Syafi'i Akrom
+                    </p>
+                    <p class="footer-text mb-0" style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                        <i class="ti ti-clock-hour-4" style="font-size: 0.7rem;"></i>
+                        Server aktif hanya di jam sekolah aktif
+                    </p>
+                </div>
             </div>
         </div>
     </footer>

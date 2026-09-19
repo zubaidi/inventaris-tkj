@@ -320,14 +320,19 @@
                     </p>
                 </div>
 
-                {{-- Kanan: Info tambahan (opsional) --}}
-                <p class="footer-text mb-0">
-                    Sistem Inventaris Jurusan SMK Syafi'i Akrom
-                </p>
+                {{-- Kanan: Info tambahan --}}
+                <div class="text-md-end text-center">
+                    <p class="footer-text mb-1">
+                        Sistem Inventaris Jurusan SMK Syafi'i Akrom
+                    </p>
+                    <p class="footer-text mb-0" style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                        <i class="ti ti-clock-hour-4" style="font-size: 0.7rem;"></i>
+                        Server aktif hanya di jam sekolah aktif
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
-
 
     <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
