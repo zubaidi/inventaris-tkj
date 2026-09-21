@@ -30,7 +30,7 @@
                     <div class="col-md-8 col-lg-6 col-xxl-3 auth-card">
                         <div class="card mb-0">
                             <div class="card-body">
-                                <a href="../main/index.html"
+                                <a href="{{ route('home') }}"
                                     class="text-nowrap logo-img text-center d-block mb-5 w-100">
                                     <img src="{{ asset('assets/image/sa.png') }}" class="dark-logo" alt="Logo-Dark"
                                         width="64" height="64" />
@@ -75,9 +75,9 @@
                                     <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">
                                         <i class="ti ti-login me-1"></i> Masuk Ke Sistem
                                     </button>
-                                    <button type="submit" class="btn btn-success w-100 py-8 rounded-2">
-                                        <i class="ti ti-login me-1"></i> Kembali Ke Dashboard
-                                    </button>
+                                    <a href="{{ route('home') }}" type="button" class="btn btn-success w-100 py-8 rounded-2">
+                                        <i class="ti ti-logout me-1"></i> Kembali Ke Dashboard
+                                    </a>
                                 </form>
                             </div>
                             <div class="card-footer border-0 py-3"

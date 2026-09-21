@@ -31,31 +31,28 @@ class InventarisController extends Controller
         if ($request->filled('search')) {
             $query->search($request->search);
         }
-
-        // Filter kondisi
         if ($request->filled('kondisi')) {
             $query->where('kondisi', $request->kondisi);
         }
-
-        // Filter tahun
         if ($request->filled('tahun')) {
             $query->where('tahun_pembelian', $request->tahun);
         }
-
-        // Filter lab
         if ($request->filled('lab_id')) {
             $query->where('lab_id', $request->lab_id);
         }
-
-        // Filter sumber dana
         if ($request->filled('sumber_dana_id')) {
             $query->where('sumber_dana_id', $request->sumber_dana_id);
         }
 
+        // 👇 25 per halaman
         $perPage = $request->input('per_page', 10);
+        if (! in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
         $inventaris = $query->latest()->paginate($perPage)->withQueryString();
 
-        // Data buat dropdown filter
+        // Data dropdown filter
         $labs = Lab::orderBy('nama_lab')->get();
         $sumberDanas = SumberDana::orderBy('nama')->get();
         $tahunList = Inventaris::select('tahun_pembelian')
@@ -63,18 +60,14 @@ class InventarisController extends Controller
             ->orderBy('tahun_pembelian', 'desc')
             ->pluck('tahun_pembelian');
 
-        // Summary card (opsional)
+        // Summary
         $totalAset = Inventaris::selectRaw('COALESCE(SUM(volume * harga_satuan), 0) as total')
             ->value('total');
         $totalBarang = Inventaris::count();
 
         return view('admin.inventaris.index', compact(
-            'inventaris',
-            'labs',
-            'sumberDanas',
-            'tahunList',
-            'totalAset',
-            'totalBarang'
+            'inventaris', 'labs', 'sumberDanas', 'tahunList',
+            'totalAset', 'totalBarang'
         ));
     }
 

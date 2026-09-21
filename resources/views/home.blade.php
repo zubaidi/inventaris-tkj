@@ -332,7 +332,8 @@
                                             <form action="{{ route('home') }}" method="GET" class="d-flex gap-2">
                                                 <input type="text" name="search" class="form-control"
                                                     placeholder="Cari barang, nomor inventaris, atau spesifikasi..."
-                                                    value="{{ $search ?? '' }}" autofocus>
+                                                    value="{{ $search ?? '' }}" maxlength="80"
+                                                    autocomplete="off" autofocus>
                                                 <button type="submit" class="btn btn-primary px-3">
                                                     <i class="ti ti-search"></i> Cari
                                                 </button>
@@ -463,13 +464,13 @@
                                                             aria-controls="{{ $collapseId }}">
                                                             <div class="d-flex align-items-center gap-3 w-100 me-2">
                                                                 {{-- Icon Jurusan --}}
-                                                                <div class="rounded-3 bg-primary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                                <div class="rounded-3 bg-primary-subtle d-flex align-items-center justify-content-center shrink-0"
                                                                     style="width: 40px; height: 40px;">
                                                                     <i class="ti ti-school text-primary"></i>
                                                                 </div>
 
                                                                 {{-- Info Jurusan --}}
-                                                                <div class="flex-grow-1">
+                                                                <div class="grow">
                                                                     <div class="fw-semibold text-dark">
                                                                         {{ $jurusan->nama }}
                                                                     </div>

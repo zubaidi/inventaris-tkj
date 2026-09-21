@@ -23,7 +23,8 @@
                                 </ol>
                             </nav>
                         </div>
-                        <a href="{{ route('admin.inventaris.create') }}" class="btn btn-primary d-flex align-items-center gap-2">
+                        <a href="{{ route('admin.inventaris.create') }}"
+                            class="btn btn-primary d-flex align-items-center gap-2">
                             <i class="ti ti-plus fs-5"></i> Tambah Data
                         </a>
                     </div>
@@ -31,6 +32,20 @@
 
                 <div class="card-body">
                     <div class="table-responsive">
+                        <form method="GET" class="d-flex gap-2 mb-3">
+                            @foreach (request()->except('per_page', 'page') as $key => $value)
+                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                            @endforeach
+
+                            <select name="per_page" class="form-select form-select-sm" style="width: auto;"
+                                onchange="this.form.submit()">
+                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                            </select>
+                            <span class="align-self-center small text-muted">baris per halaman</span>
+                        </form>
                         <table class="table table-hover table-lg" id="tabel-inventaris">
                             <thead>
                                 <tr>
@@ -61,17 +76,19 @@
                                         <td class="text-center">
                                             <div class="d-flex gap-1 justify-content-center">
                                                 <a href="{{ route('admin.inventaris.show', $item->id) }}"
-                                                   class="btn btn-sm btn-info" title="Detail">
+                                                    class="btn btn-sm btn-info" title="Detail">
                                                     <i class="ti ti-eye"></i>
                                                 </a>
                                                 <a href="{{ route('admin.inventaris.edit', $item->id) }}"
-                                                   class="btn btn-sm btn-warning" title="Edit">
+                                                    class="btn btn-sm btn-warning" title="Edit">
                                                     <i class="ti ti-pencil"></i>
                                                 </a>
-                                                <form action="{{ route('admin.inventaris.destroy', $item->id) }}" method="POST" class="form-delete">
+                                                <form action="{{ route('admin.inventaris.destroy', $item->id) }}"
+                                                    method="POST" class="form-delete">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger btn-delete" title="Hapus" data-nama="{{ $item->nama_barang }}">
+                                                    <button type="button" class="btn btn-sm btn-danger btn-delete"
+                                                        title="Hapus" data-nama="{{ $item->nama_barang }}">
                                                         <i class="ti ti-trash"></i>
                                                     </button>
                                                 </form>
@@ -81,6 +98,23 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer bg-white border-top py-3">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <small class="text-muted">
+                                Menampilkan
+                                <strong>{{ $inventaris->firstItem() ?? 0 }}</strong>
+                                –
+                                <strong>{{ $inventaris->lastItem() ?? 0 }}</strong>
+                                dari
+                                <strong>{{ $inventaris->total() }}</strong> barang
+                            </small>
+                            <div>
+                                @if ($inventaris->hasPages())
+                                    {{ $inventaris->links() }}
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -96,14 +130,23 @@
             language: {
                 url: "{{ asset('assets/js/id.json') }}"
             },
-            order: [[0, 'asc']],
-            columnDefs: [
-                { targets: [0, 5], orderable: false, searchable: false },
-                { targets: [0, 3, 4, 5], className: 'text-center' }
-            ]
+
+            paging: false,
+            searching: false,
+            info: false,
+
+            columnDefs: [{
+                targets: 0,
+                orderable: false,
+                searchable: false,
+            }],
+
+            order: [
+                [2, 'asc']
+            ],
         });
 
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             const deleteButton = event.target.closest('.btn-delete');
             if (!deleteButton) return;
 

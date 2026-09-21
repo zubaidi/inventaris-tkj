@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Halaman depan: tabel inventaris + search + filter + summary
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])
+    ->middleware('throttle:30,1')
+    ->name('home');
 
 // Detail 1 barang
 Route::get('/barang/{id}', [HomeController::class, 'show'])->name('barang.show');

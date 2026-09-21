@@ -11,7 +11,11 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'search' => 'nullable|string|max:80',
+        ]);
         $search = $request->input('search');
+        $search = $search ? trim(strip_tags($search)) : null;
         $query = Inventaris::with(['lab', 'sumberDana']);
 
         if ($search) {
