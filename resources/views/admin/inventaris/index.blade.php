@@ -32,19 +32,44 @@
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <form method="GET" class="d-flex gap-2 mb-3">
-                            @foreach (request()->except('per_page', 'page') as $key => $value)
+                        <form method="GET" class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                            {{-- Preserve filter yang udah ada (kecuali search, per_page, page) --}}
+                            @foreach (request()->except('search', 'per_page', 'page') as $key => $value)
                                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                             @endforeach
 
-                            <select name="per_page" class="form-select form-select-sm" style="width: auto;"
-                                onchange="this.form.submit()">
-                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
-                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                            </select>
-                            <span class="align-self-center small text-muted">baris per halaman</span>
+                            {{-- Baris per Halaman — kiri --}}
+                            <div class="d-flex align-items-center gap-2">
+                                <select name="per_page" class="form-select form-select-sm" style="width: auto;"
+                                    onchange="this.form.submit()">
+                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                </select>
+                                <span class="small text-muted text-nowrap">baris per halaman</span>
+                            </div>
+
+                            {{-- Search Box — kanan --}}
+                            <div class="d-flex align-items-center gap-2 ms-md-auto">
+                                <div class="input-group input-group-sm" style="width: 280px;">
+                                    <span class="input-group-text bg-white">
+                                        <i class="ti ti-search"></i>
+                                    </span>
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Cari barang, no inventaris..." value="{{ request('search') }}"
+                                        maxlength="100" autocomplete="off">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    Cari
+                                </button>
+                                @if (request('search'))
+                                    <a href="{{ route('admin.inventaris.index', request()->except('search', 'page')) }}"
+                                        class="btn btn-outline-secondary btn-sm" title="Clear search">
+                                        <i class="ti ti-x"></i>
+                                    </a>
+                                @endif
+                            </div>
                         </form>
                         <table class="table table-hover table-lg" id="tabel-inventaris">
                             <thead>
