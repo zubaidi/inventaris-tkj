@@ -31,27 +31,27 @@
             <div class="card-body">
                 <form action="{{ route('admin.inventaris.store') }}" method="POST">
                     @csrf
-                    @if (auth()->user()->isSuperAdmin())
-                        <div class="col-md-6">
-                            <label for="jurusan_id" class="form-label">
-                                Jurusan <span class="text-danger">*</span>
-                            </label>
-                            <select name="jurusan_id" id="jurusan_id"
-                                class="form-select @error('jurusan_id') is-invalid @enderror" required>
-                                <option value="">— Pilih Jurusan —</option>
-                                @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
-                                    <option value="{{ $j->id }}"
-                                        {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
-                                        {{ $j->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('jurusan_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    @endif
                     <div class="row g-3">
+                        @if (auth()->user()->isSuperAdmin())
+                            <div class="col-md-6">
+                                <label for="jurusan_id" class="form-label">
+                                    Jurusan <span class="text-danger">*</span>
+                                </label>
+                                <select name="jurusan_id" id="jurusan_id"
+                                    class="form-select @error('jurusan_id') is-invalid @enderror" required>
+                                    <option value="">— Pilih Jurusan —</option>
+                                    @foreach (\App\Models\Jurusan::orderBy('nama')->get() as $j)
+                                        <option value="{{ $j->id }}"
+                                            {{ old('jurusan_id', $model->jurusan_id ?? '') == $j->id ? 'selected' : '' }}>
+                                            {{ $j->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('jurusan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endif
                         <div class="col-md-6">
                             <label for="tanggal" class="form-label">Tanggal <span class="text-danger">*</span></label>
                             <input type="date" class="form-control @error('tanggal') is-invalid @enderror" id="tanggal"

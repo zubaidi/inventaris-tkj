@@ -44,7 +44,9 @@ class HomeController extends Controller
             ->orderBy('nama_barang')
             ->paginate(15);
 
-        $grandTotal = $inventaris->sum(fn ($i) => $i->volume * $i->harga_satuan);
+        $grandTotal = Inventaris::where('lab_id', $id)
+        ->selectRaw('COALESCE(SUM(volume * harga_satuan), 0) as total')
+        ->value('total');
 
         return view('home-per-ruang', compact('lab', 'inventaris', 'grandTotal'));
     }

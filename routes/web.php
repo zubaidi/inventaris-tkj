@@ -5,10 +5,10 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventarisController;
+use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\LabController;
 use App\Http\Controllers\SumberDanaController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\JurusanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,6 +71,11 @@ Route::middleware(['auth'])
         Route::get('inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
         Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
         Route::get('inventaris/rekap-per-ruang', [InventarisController::class, 'rekapPerRuang'])->name('inventaris.rekap-per-ruang');
+        // import export template excel
+        Route::middleware(['auth', 'admin'])->prefix('inventaris')->name('inventaris.')->group(function () {
+            Route::get('template', [InventarisController::class, 'downloadTemplate'])->name('template');
+            Route::post('import', [InventarisController::class, 'import'])->name('import');
+        });
         Route::resource('inventaris', InventarisController::class);
 
         // ADMIN ONLY

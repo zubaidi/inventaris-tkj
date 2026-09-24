@@ -11,7 +11,8 @@
         <div class="datatables">
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-start justify-content-between">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <!-- Bagian Kiri: Judul dan Breadcrumb -->
                         <div>
                             <h3 class="fw-semibold mb-1">Data Inventaris</h3>
                             <nav aria-label="breadcrumb">
@@ -23,12 +24,21 @@
                                 </ol>
                             </nav>
                         </div>
-                        <a href="{{ route('admin.inventaris.create') }}"
-                            class="btn btn-primary d-flex align-items-center gap-2">
-                            <i class="ti ti-plus fs-5"></i> Tambah Data
-                        </a>
+
+                        <!-- Bagian Kanan: Tombol yang Dikelompokkan agar Berjejer -->
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-danger d-flex align-items-center gap-2"
+                                data-bs-toggle="modal" data-bs-target="#modalImport">
+                                <i class="ti ti-file-arrow-right fs-5"></i> Import Data
+                            </button>
+                            <a href="{{ route('admin.inventaris.create') }}"
+                                class="btn btn-primary d-flex align-items-center gap-2">
+                                <i class="ti ti-plus fs-5"></i> Tambah Data
+                            </a>
+                        </div>
                     </div>
                 </div>
+
 
                 <div class="card-body">
                     <div class="table-responsive">
@@ -145,6 +155,64 @@
             </div>
         </div>
     </div>
+    @if (!auth()->user()->isSuperAdmin())
+        <div class="modal fade" id="modalImport" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="{{ route('admin.inventaris.import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="ti ti-upload me-1"></i> Import Inventaris
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            {{-- Info jurusan --}}
+                            <div class="alert alert-primary small mb-3">
+                                <i class="ti ti-school me-1"></i>
+                                Import ke jurusan: <strong>{{ auth()->user()->jurusan->nama ?? '-' }}</strong>
+                            </div>
+
+                            {{-- Step 1: Download Template --}}
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">1. Download Template</label>
+                                <a href="{{ route('admin.inventaris.template') }}"
+                                    class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="ti ti-download me-1"></i> Download Template
+                                    ({{ auth()->user()->jurusan->singkatan ?? '-' }})
+                                </a>
+                                <small class="text-muted d-block mt-1">
+                                    Template udah include Lab & Sumber Dana jurusan lu.
+                                </small>
+                            </div>
+
+                            {{-- Step 2: Upload --}}
+                            <div>
+                                <label for="file" class="form-label fw-semibold">2. Upload File</label>
+                                <input type="file" name="file" id="file"
+                                    class="form-control form-control-sm @error('file') is-invalid @enderror"
+                                    accept=".xlsx,.xls" required>
+                                @error('file')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Format: xlsx/xls, max 5MB</small>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="ti ti-upload me-1"></i> Import
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @push('script')

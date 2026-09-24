@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Exports\InventarisExport;
+use App\Exports\InventarisTemplateExport;
+use App\Imports\InventarisImport;
 use App\Models\Inventaris;
 use App\Models\Lab;
 use App\Models\SumberDana;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class InventarisController extends Controller
 {
@@ -337,5 +340,74 @@ class InventarisController extends Controller
         $filename = 'Inventaris_'.str_replace(' ', '_', $namaLab).'_'.date('Ymd_His').'.xlsx';
 
         return Excel::download(new InventarisExport($labId, $namaLab), $filename);
+    }
+
+    /**
+     * Download template Excel — otomatis sesuai jurusan user.
+     * Cuma buat admin/user jurusan (bukan super admin).
+     */
+    public function downloadTemplate()
+    {
+        $user = auth()->user();
+
+        // Super admin nggak boleh download (nggak ada jurusan)
+        if ($user->isSuperAdmin()) {
+            abort(403, 'Super admin nggak punya jurusan. Fitur ini cuma buat admin jurusan.');
+        }
+
+        if (! $user->jurusan_id) {
+            return back()->with('error', 'Akun lu belum punya jurusan. Hubungi super admin.');
+        }
+
+        $namaJurusan = $user->jurusan->singkatan ?? 'Jurusan';
+        $filename = 'Template_Inventaris_'.$namaJurusan.'_'.date('Ymd_His').'.xlsx';
+
+        return Excel::download(
+            new InventarisTemplateExport($user->jurusan_id),
+            $filename
+        );
+    }
+
+    /**
+     * Import dari Excel — otomatis masuk ke jurusan user.
+     */
+    public function import(Request $request)
+    {
+        $user = auth()->user();
+
+        // Super admin nggak boleh import
+        if ($user->isSuperAdmin()) {
+            abort(403, 'Super admin nggak bisa import. Login sebagai admin jurusan.');
+        }
+
+        if (! $user->jurusan_id) {
+            return back()->with('error', 'Akun lu belum punya jurusan.');
+        }
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:5120',
+        ]);
+
+        try {
+            $import = new InventarisImport($user->jurusan_id);
+            Excel::import($import, $request->file('file'));
+
+            $inserted = $import->getInserted();
+
+            return redirect()
+                ->route('admin.inventaris.index')
+                ->with('success', "{$inserted} data berhasil di-import ke jurusan {$user->jurusan->singkatan}.");
+
+        } catch (ValidationException $e) {
+            $errors = [];
+            foreach ($e->failures() as $failure) {
+                $errors[] = "Baris {$failure->row()}: ".implode(', ', $failure->errors());
+            }
+
+            return back()->with('error', 'Import gagal: '.implode(' | ', array_slice($errors, 0, 5)));
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Import gagal: '.$e->getMessage());
+        }
     }
 }
