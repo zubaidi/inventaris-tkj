@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsAdmin
+class EnsureUserIsPimpinan
 {
     /**
      * Handle an incoming request.
@@ -16,14 +16,13 @@ class EnsureUserIsAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->user()) {
-            return redirect('/login')->with('error', 'Silakan login dulu.');
+            return redirect('/login');
         }
 
-        // Cuma super_admin & admin yang boleh masuk area admin
-        if (! in_array($request->user()->role, ['super_admin', 'admin', 'kepala_sekolah', 'waka'])) {
+        if (! $request->user()->isPimpinan()) {
             return redirect()
-                ->route('admin.inventaris.index')
-                ->with('error', 'Akses ditolak.');
+                ->route('admin.dashboard')
+                ->with('error', 'Akses ditolak. Halaman ini khusus pimpinan.');
         }
 
         return $next($request);

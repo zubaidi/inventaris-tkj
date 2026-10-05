@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsAdmin
+class EnsureUserCanWrite
 {
     /**
      * Handle an incoming request.
@@ -15,15 +15,17 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()) {
-            return redirect('/login')->with('error', 'Silakan login dulu.');
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect('/login');
         }
 
-        // Cuma super_admin & admin yang boleh masuk area admin
-        if (! in_array($request->user()->role, ['super_admin', 'admin', 'kepala_sekolah', 'waka'])) {
+        // Pimpinan read-only
+        if ($user->isPimpinan()) {
             return redirect()
-                ->route('admin.inventaris.index')
-                ->with('error', 'Akses ditolak.');
+                ->back()
+                ->with('error', 'Pimpinan cuma bisa lihat, nggak bisa edit data.');
         }
 
         return $next($request);

@@ -37,7 +37,8 @@
                         <div class="card border-0 shadow-sm h-100">
                             <div class="card-body">
                                 <div class="text-center mb-4">
-                                    <div class="rounded-circle bg-primary-subtle d-inline-flex align-items-center justify-content-center mb-3" style="width:90px; height:90px;">
+                                    <div class="rounded-circle bg-primary-subtle d-inline-flex align-items-center justify-content-center mb-3"
+                                        style="width:90px; height:90px;">
                                         <i class="ti ti-user fs-2 text-primary"></i>
                                     </div>
                                     <h4 class="fw-semibold mb-1">{{ $user->name }}</h4>
@@ -58,20 +59,67 @@
                                             <tr>
                                                 <th>Role</th>
                                                 <td>
-                                                    @if ($user->role === 'admin')
-                                                        <span class="badge bg-primary-subtle text-primary">Admin</span>
+                                                    @switch($user->role)
+                                                        @case('super_admin')
+                                                            <span class="badge bg-danger-subtle text-danger">
+                                                                <i class="ti ti-shield-star me-1"></i> Super Admin
+                                                            </span>
+                                                        @break
+
+                                                        @case('kepala_sekolah')
+                                                            <span class="badge bg-success-subtle text-success">
+                                                                <i class="ti ti-user-star me-1"></i> Kepala Sekolah
+                                                            </span>
+                                                        @break
+
+                                                        @case('waka')
+                                                            <span class="badge bg-warning-subtle text-warning">
+                                                                <i class="ti ti-user-check me-1"></i> Wakil Kepala Sekolah
+                                                            </span>
+                                                        @break
+
+                                                        @case('admin')
+                                                            <span class="badge bg-primary-subtle text-primary">
+                                                                <i class="ti ti-user-shield me-1"></i> Admin Jurusan
+                                                            </span>
+                                                        @break
+
+                                                        @case('user')
+                                                            <span class="badge bg-info-subtle text-info">
+                                                                <i class="ti ti-user me-1"></i> User
+                                                            </span>
+                                                        @break
+
+                                                        @default
+                                                            <span class="badge bg-secondary-subtle text-secondary">-</span>
+                                                    @endswitch
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Jurusan</th>
+                                                <td>
+                                                    @if ($user->jurusan)
+                                                        <span class="badge bg-primary-subtle text-primary">
+                                                            <i class="ti ti-school me-1"></i>
+                                                            {{ $user->jurusan->nama }}
+                                                            ({{ $user->jurusan->singkatan }})
+                                                        </span>
                                                     @else
-                                                        <span class="badge bg-secondary-subtle text-secondary">User</span>
+                                                        <span class="text-muted fst-italic small">
+                                                            <i class="ti ti-minus me-1"></i> Tidak terikat jurusan
+                                                        </span>
                                                     @endif
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>Dibuat</th>
-                                                <td>{{ $user->created_at ? $user->created_at->format('d M Y, H:i') : '-' }}</td>
+                                                <td>{{ $user->created_at ? $user->created_at->format('d M Y, H:i') : '-' }}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th>Terakhir Diubah</th>
-                                                <td>{{ $user->updated_at ? $user->updated_at->format('d M Y, H:i') : '-' }}</td>
+                                                <td>{{ $user->updated_at ? $user->updated_at->format('d M Y, H:i') : '-' }}
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

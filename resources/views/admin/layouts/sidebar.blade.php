@@ -28,11 +28,13 @@
         <nav class="sidebar-nav scroll-sidebar" data-simplebar>
             <ul id="sidebarnav">
                 @php
-                    $isAdmin = auth()->user()->isAdmin();
-                    $isSuperAdmin = auth()->check() && auth()->user()->isSuperAdmin();
+                    $user = auth()->user();
+                    $isSuperAdmin = $user->isSuperAdmin();
+                    $isPimpinan = $user->isPimpinan();
+                    $isAdmin = $user->isAdmin();
                 @endphp
 
-                @if ($isAdmin)
+                @if ($isAdmin || $isPimpinan)
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span class="hide-menu">Home</span>
@@ -166,6 +168,8 @@
                     <span class="fs-2">
                         @if (auth()->user()->isSuperAdmin())
                             AdminPusat
+                        @elseif (auth()->user()->isPimpinan())
+                            Pimpinan
                         @else
                             Admin
                         @endif

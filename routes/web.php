@@ -9,6 +9,7 @@ use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\LabController;
 use App\Http\Controllers\SumberDanaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,29 +67,57 @@ Route::middleware(['auth'])
     ->name('admin.')
     ->group(function () {
 
-        // ADMIN & USER
+        /* ============================================================
+         | PIMPINAN & ADMIN & USER — Read-only
+         ============================================================ */
+        Route::middleware('admin')->group(function () {
+            // Dashboard
+            Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+            // Laporan (khusus pimpinan)
+            Route::middleware('pimpinan')->group(function () {
+                Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+                Route::get('laporan/per-jurusan', [LaporanController::class, 'perJurusan'])->name('laporan.per-jurusan');
+                Route::get('laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
+            });
+        });
+
+        // Inventaris view (semua role)
         Route::get('inventaris/cetak', [InventarisController::class, 'cetakInventaris'])->name('inventaris.cetak');
         Route::get('inventaris/export', [InventarisController::class, 'export'])->name('inventaris.export');
         Route::get('inventaris/rekap', [InventarisController::class, 'rekapInventaris'])->name('inventaris.rekap');
         Route::get('inventaris/rekap-per-ruang', [InventarisController::class, 'rekapPerRuang'])->name('inventaris.rekap-per-ruang');
-        // import export template excel
-        Route::middleware(['auth', 'admin'])->prefix('inventaris')->name('inventaris.')->group(function () {
-            Route::get('template', [InventarisController::class, 'downloadTemplate'])->name('template');
-            Route::post('import', [InventarisController::class, 'import'])->name('import');
-        });
-        Route::resource('inventaris', InventarisController::class);
+        Route::get('inventaris', [InventarisController::class, 'index'])->name('inventaris.index');
+        Route::get('inventaris/{id}', [InventarisController::class, 'show'])->name('inventaris.show');
 
-        // ADMIN ONLY
+        /* ============================================================
+         | ADMIN & USER — Write (CRUD)
+         ============================================================ */
+        Route::middleware('can_write')->group(function () {
+            Route::post('inventaris', [InventarisController::class, 'store'])->name('inventaris.store');
+            Route::get('inventaris/create', [InventarisController::class, 'create'])->name('inventaris.create');
+            Route::get('inventaris/{id}/edit', [InventarisController::class, 'edit'])->name('inventaris.edit');
+            Route::put('inventaris/{id}', [InventarisController::class, 'update'])->name('inventaris.update');
+            Route::delete('inventaris/{id}', [InventarisController::class, 'destroy'])->name('inventaris.destroy');
+
+            Route::get('inventaris/template', [InventarisController::class, 'downloadTemplate'])->name('inventaris.template');
+            Route::post('inventaris/import', [InventarisController::class, 'import'])->name('inventaris.import');
+        });
+
+        /* ============================================================
+         | ADMIN ONLY — Master data
+         ============================================================ */
         Route::middleware('admin')->group(function () {
-            Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
             Route::resource('labs', LabController::class);
             Route::resource('sumber-dana', SumberDanaController::class);
         });
 
-        // SUPER ADMIN ONLY
+        /* ============================================================
+         | SUPER ADMIN — User & Backup
+         ============================================================ */
         Route::middleware('super_admin')->group(function () {
-            Route::resource('jurusan', JurusanController::class);
             Route::resource('user', UserController::class);
+            Route::resource('jurusan', JurusanController::class);
 
             Route::prefix('backup')->name('backup.')->group(function () {
                 Route::get('/database', [BackupController::class, 'indexDatabase'])->name('database');

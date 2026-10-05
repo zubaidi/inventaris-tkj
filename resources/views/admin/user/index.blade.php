@@ -52,6 +52,10 @@
                                                 <span class="badge bg-danger-subtle text-danger">Super Admin</span>
                                             @elseif ($user->role === 'admin')
                                                 <span class="badge bg-primary-subtle text-primary">Admin</span>
+                                            @elseif ($user->role === 'kepala_sekolah')
+                                                <span class="badge bg-success-subtle text-success">Kepala Sekolah</span>
+                                            @elseif ($user->role === 'waka')
+                                                <span class="badge bg-warning-subtle text-warning">Wakil Kepala Sekolah</span>
                                             @else
                                                 <span class="badge bg-secondary-subtle text-secondary">User</span>
                                             @endif

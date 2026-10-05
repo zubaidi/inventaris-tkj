@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -26,18 +25,26 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,user',
+            'password' => 'required|min:8|confirmed',
+            'role' => 'required|in:super_admin,kepala_sekolah,waka,admin,user',
+            'jurusan_id' => [
+                'nullable',
+                'exists:jurusans,id',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (in_array($request->role, ['admin', 'user']) && empty($value)) {
+                        $fail('Jurusan wajib dipilih untuk role '.ucfirst($request->role).'.');
+                    }
+                },
+            ],
         ]);
 
-        User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
-        ]);
+        $validated['password'] = Hash::make($validated['password']);
 
-        return redirect()->route('admin.user.index')->with('success', 'User berhasil ditambahkan.');
+        User::create($validated);
+
+        return redirect()
+            ->route('admin.user.index')
+            ->with('success', 'User berhasil ditambahkan.');
     }
 
     public function show(string $id)
@@ -60,24 +67,32 @@ class UserController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'role' => 'required|in:admin,user',
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'nullable|min:8|confirmed',
+            'role' => 'required|in:super_admin,kepala_sekolah,waka,admin,user',
+            'jurusan_id' => [
+                'nullable',
+                'exists:jurusans,id',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (in_array($request->role, ['admin', 'user']) && empty($value)) {
+                        $fail('Jurusan wajib dipilih untuk role '.ucfirst($request->role).'.');
+                    }
+                },
+            ],
         ]);
 
-        $data = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'role' => $validated['role'],
-        ];
-
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+        // Handle password — hanya update kalau diisi
+        if (! empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
         }
 
-        $user->update($data);
+        $user->update($validated);
 
-        return redirect()->route('admin.user.index')->with('success', 'User berhasil diupdate.');
+        return redirect()
+            ->route('admin.user.index')
+            ->with('success', 'User berhasil diupdate.');
     }
 
     public function destroy(string $id)

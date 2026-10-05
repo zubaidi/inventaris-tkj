@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'jurusan_id',
     ];
 
     /**
@@ -83,5 +84,38 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === 'user';
+    }
+
+    /**
+     * Cek apakah user ini kepala sekolah.
+     */
+    public function isKepalaSekolah(): bool
+    {
+        return $this->role === 'kepala_sekolah';
+    }
+
+    /**
+     * Cek apakah user ini waka.
+     */
+    public function isWaka(): bool
+    {
+        return $this->role === 'waka';
+    }
+
+    /**
+     * Cek apakah user ini "pimpinan" — kepala sekolah atau waka.
+     * Read-only, bisa liat semua jurusan di sekolahnya.
+     */
+    public function isPimpinan(): bool
+    {
+        return in_array($this->role, ['kepala_sekolah', 'waka']);
+    }
+
+    /**
+     * Cek apakah user bisa akses area admin (CRUD).
+     */
+    public function canAccessAdminPanel(): bool
+    {
+        return in_array($this->role, ['super_admin', 'admin']);
     }
 }

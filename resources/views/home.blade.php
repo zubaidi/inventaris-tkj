@@ -477,7 +477,7 @@
                                                                     <small class="text-muted"
                                                                         style="font-size: 0.7rem;">
                                                                         {{ $jurusan->singkatan }} ·
-                                                                        {{ $jurusan->labs->count() }} lab ·
+                                                                        {{ $jurusan->labs->count() }} ruang ·
                                                                         {{ $jurusan->inventaris_count }} item
                                                                     </small>
                                                                 </div>

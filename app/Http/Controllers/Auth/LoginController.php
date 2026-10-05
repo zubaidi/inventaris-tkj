@@ -22,10 +22,8 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // tambahin key login biar aman
         $key = 'login:'.strtolower($request->email).'|'.$request->ip();
 
-        // cek limit login dulu
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
 
@@ -36,13 +34,35 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             RateLimiter::clear($key);
+
+            $user = Auth::user();
+
+            // Cek status approval
+            if ($user->status === 'pending') {
+                Auth::logout();
+
+                return back()->withErrors(['email' => 'Akun lu masih nunggu approval Super Admin.']);
+            }
+
+            if ($user->status === 'rejected') {
+                Auth::logout();
+
+                return back()->withErrors(['email' => 'Akun lu ditolak. Hubungi Super Admin.']);
+            }
+
             $request->session()->regenerate();
 
-            // Redirect sesuai role
-            if (Auth::user()->isAdmin()) {
+            // 👇 Redirect sesuai role
+            if ($user->isSuperAdmin() || $user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'));
             }
 
+            if ($user->isPimpinan()) {
+                // Kepala Sekolah & Waka → dashboard (read-only)
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
+            // User biasa
             return redirect()->intended(route('admin.inventaris.index'));
         }
 
